@@ -9,10 +9,10 @@ export const site = {
   name: 'PAPAFIOGOS',
   url: 'https://papafiogos.gr',
   slogan: 'I shoot. You smile.', // same on el + en, never translated
-  /** [OWNER INPUT] ~140–160 characters each. Drafts from the design document. */
+  /** Search / link-preview description (approved by the owner 2026-11-12). */
   description: {
-    el: 'Παπαφιόγκος: φωτογραφία, βίντεο και περιεχόμενο που σε κάνει να χαμογελάς. Από την Πάτρα, από το 2009. Μίλα μου.',
-    en: 'PAPAFIOGOS: photography, video and content that makes you smile. Based in Patras, Greece, since 2009. Let’s talk.',
+    el: 'Παπαφιόγκος: φωτογραφία, βίντεο και περιεχόμενο που σε κάνει να χαμογελάς. Από την Πάτρα. Μίλα μου.',
+    en: 'PAPAFIOGOS: photography, video and content that makes you smile. Based in Patras, Greece. Let’s talk.',
   },
   alternateNames: ['Παπαφιόγκος', 'Papafiogos', 'ΠΑΠΑ ΦΙΟΓΚΟΣ'],
   locales: ['el', 'en'] as const,

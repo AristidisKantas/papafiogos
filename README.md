@@ -159,10 +159,10 @@ A failed build never replaces a live site — the last good version stays online
 
 ## 5. Content to provide [OWNER INPUT]
 
-- [ ] **Meta descriptions** (`site.ts` → `description.el` / `.en`, 140–160 characters). Drafts from the design doc are in place.
+- [x] **Meta descriptions** — approved 2026-11-12 (`site.ts` → `description`).
 - [ ] **Timeline heading**: keep "Η ΙΣΤΟΡΙΑ / THE STORY", change it (`strings.ts`), or hide it (`site.ts` → `timeline.showHeading: false`).
 - [ ] **Timeline order**: oldest-first (current) or newest-first (`site.ts` → `timeline.order`).
-- [ ] **Privacy text** final wording (`strings.ts` → `privacyBody`).
+- [x] **Privacy text** — written 2026-11-12 (`strings.ts` → `privacyBody`; the email comes from `site.ts` automatically, the analytics sentence appears only once analytics is switched on). Update the date in `privacyUpdated` whenever you change it.
 - [ ] **Timeline moments** — whenever you're ready.
 - [ ] **Hinting cues on the logo** — try them on your real phone and tune `site.ts` → `logo.breathe`, `logo.ripple`, `logo.nudge`.
 - [ ] **Cloudflare Web Analytics token** (`site.ts` → `analyticsToken`) — at launch.

@@ -23,7 +23,7 @@ test('Greek home: lang, title, canonical, hreflang, OG', async ({ page }) => {
     'https://papafiogos.gr/og-image.jpg',
   );
   const desc = await page.locator('meta[name=description]').getAttribute('content');
-  expect(desc!.length).toBeGreaterThan(100);
+  expect(desc!.length).toBeGreaterThan(80);
 });
 
 test('English home has its own canonical and strings', async ({ page }) => {
@@ -116,4 +116,13 @@ test('no console errors (incl. CSP violations) on any page', async ({ page }) =>
     await page.waitForTimeout(300);
   }
   expect(errors).toEqual([]);
+});
+
+test('privacy page names the controller and uses site.contact.email', async ({ page }) => {
+  await page.goto('/privacy/');
+  await expect(page.getByText('Αριστείδης Κάντας', { exact: false })).toBeVisible();
+  await expect(page.getByText('papafiogos@gmail.com', { exact: false })).toBeVisible();
+  await expect(page.locator('main')).not.toContainText('{email}');
+  await page.goto('/en/privacy/');
+  await expect(page.getByText('Aristeidis Kantas', { exact: false })).toBeVisible();
 });

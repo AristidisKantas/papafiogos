@@ -8,6 +8,10 @@ interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
+const fill = (p: string) => p.replace('{email}', site.contact.email);
+const body: string[] = [...strings[locale].privacyBody];
+// the analytics sentence only appears while analytics is actually switched on
+if (site.analyticsToken) body.splice(3, 0, strings[locale].privacyAnalytics);
 ---
 
 <Base locale={locale} page="privacy" title={t(locale, 'privacyTitle')}>
@@ -16,9 +20,10 @@ const { locale } = Astro.props;
       {site.name}
     </a>
     <h1>{t(locale, 'privacyTitle')}</h1>
-    {strings[locale].privacyBody.map((p) => (
-      <p>{p}</p>
+    {body.map((p) => (
+      <p>{fill(p)}</p>
     ))}
+    <p class="simple__updated">{t(locale, 'privacyUpdated')}</p>
     <p class="simple__back">
       <a href={homePath(locale)}>← {t(locale, 'home')}</a>
     </p>
@@ -58,6 +63,10 @@ const { locale } = Astro.props;
   }
   p + p {
     margin-top: 1em;
+  }
+  .simple__updated {
+    margin-top: 2rem !important;
+    font-size: 0.8125rem;
   }
   .simple__back {
     margin-top: 3rem !important;
