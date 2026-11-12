@@ -1,0 +1,86 @@
+---
+import { site } from '../config/site';
+import EvasiveLogo from './EvasiveLogo.astro';
+import type { Locale } from '../config/site';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+---
+
+<header class="hero section-full" data-hero>
+  <EvasiveLogo locale={locale} />
+  <div class="cue" aria-hidden="true" data-scroll-cue={site.scrollCue.hideAfterPx}>
+    <span class="cue__seg"></span>
+  </div>
+</header>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    height: 100svh;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+      env(safe-area-inset-left);
+    background: var(--white);
+    color: var(--black);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .cue {
+    position: absolute;
+    left: 50%;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    width: 1px;
+    height: var(--cue-h);
+    background: var(--ink-15);
+    overflow: hidden;
+    transform: translateX(-50%);
+    transition: opacity 0.4s var(--ease);
+  }
+  .cue__seg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 40%;
+    background: var(--black);
+    animation: cue var(--cue-ms) ease-in-out infinite;
+  }
+  @keyframes cue {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(250%);
+    }
+  }
+  :global(.cue.is-hidden) {
+    opacity: 0;
+  }
+  /* Very short landscape screens: the hairline would crowd the logo. */
+  @media (max-height: 360px) {
+    .cue {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cue__seg {
+      animation: none;
+      transform: translateY(75%);
+    }
+  }
+</style>
+
+<script>
+  const cue = document.querySelector<HTMLElement>('[data-scroll-cue]');
+  if (cue) {
+    const limit = Number(cue.dataset.scrollCue);
+    const update = () => cue.classList.toggle('is-hidden', scrollY > limit);
+    addEventListener('scroll', update, { passive: true });
+    update();
+  }
+</script>

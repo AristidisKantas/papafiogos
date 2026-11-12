@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Hero from './Hero.astro';
+import Timeline from './Timeline.astro';
+import Contact from './Contact.astro';
+import type { Locale } from '../config/site';
+import { anchors, absolute, t } from '../i18n/utils';
+import { homeJsonLd } from '../lib/jsonld';
+import { imageFor, videoUrl } from '../lib/media';
+import type { Moment } from '../lib/timeline-validate';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const moments = (await getCollection('timeline'))
+  .map((e) => e.data as unknown as Moment)
+  .filter((m) => !m.hidden);
+const urls: Record<string, string> = {};
+for (const m of moments)
+  for (const media of m.media) {
+    if (media.kind === 'photo') continue;
+    const poster = await getImage({ src: imageFor(media.poster), width: 1280, format: 'jpg' });
+    urls[`poster:${m.id}`] = absolute(poster.src);
+    if (media.kind === 'video') urls[`video:${m.id}`] = absolute(videoUrl(media.video));
+  }
+const jsonLd = homeJsonLd(locale, moments, urls);
+---
+
+<Base locale={locale} page="" jsonLd={jsonLd} initialSection={null}>
+  <a class="skip-link visually-hidden" href={`#${anchors[locale].contact}`}>
+    {t(locale, 'skipToContact')}
+  </a>
+  <Hero locale={locale} />
+  <main>
+    <Timeline locale={locale} />
+  </main>
+  <Contact locale={locale} />
+</Base>

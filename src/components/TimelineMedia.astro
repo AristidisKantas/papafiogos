@@ -1,0 +1,367 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import { site, type Locale } from '../config/site';
+import { pick, t } from '../i18n/utils';
+import { imageFor, lqip, videoType, videoUrl } from '../lib/media';
+import type { MediaItem } from '../lib/timeline-validate';
+
+interface Props {
+  media: MediaItem[];
+  locale: Locale;
+  /** true for the first timeline image on the page (not lazy) */
+  eager: boolean;
+  group: string;
+}
+const { media, locale, eager, group } = Astro.props;
+
+const COL = '(min-width: 1200px) 504px, (min-width: 768px) 42vw, calc(100vw - 64px)';
+const scaled = (f: number) =>
+  `(min-width: 1200px) ${Math.round(504 * f)}px, (min-width: 768px) ${Math.round(42 * f)}vw, calc((100vw - 64px) * ${f.toFixed(2)})`;
+
+const widthsFor = (w: number) => {
+  const list = site.timeline.imageWidths.filter((x) => x <= w);
+  return list.length
+    ? list.includes(w) || w > list[list.length - 1]! * 1.15
+      ? [...list, w].filter((v, i, a) => a.indexOf(v) === i && v <= 2200)
+      : list
+    : [w];
+};
+
+const photos = media.filter((m) => m.kind === 'photo');
+const single = media.length === 1;
+
+const photoData = await Promise.all(
+  photos.map(async (m, i) => {
+    const img = imageFor(m.photo);
+    const full = await getImage({
+      src: img,
+      width: Math.min(2200, img.width),
+      format: 'webp',
+      quality: 82,
+    });
+    return {
+      img,
+      full: full.src,
+      lq: await lqip(m.photo),
+      alt: pick(m.alt, locale) ?? '',
+      sizes: single
+        ? COL
+        : i === 0 && photos.length === 3
+          ? scaled(0.66)
+          : scaled(photos.length === 2 ? 0.5 : 0.34),
+      widths: widthsFor(img.width),
+    };
+  }),
+);
+
+const other = media.find((m): m is Exclude<MediaItem, { kind: 'photo' }> => m.kind !== 'photo');
+let video: null | {
+  kind: 'video' | 'youtube' | 'vimeo';
+  src?: string;
+  type?: string;
+  sound?: boolean;
+  href?: string;
+  embed?: string;
+  poster: string;
+  posterW: number;
+  posterH: number;
+  alt: string;
+  lq: string;
+} = null;
+if (other) {
+  const posterImg = imageFor(other.poster);
+  const poster = await getImage({
+    src: posterImg,
+    width: Math.min(1600, posterImg.width),
+    format: 'webp',
+    quality: 78,
+  });
+  const base = {
+    poster: poster.src,
+    posterW: posterImg.width,
+    posterH: posterImg.height,
+    alt: pick(other.alt, locale) ?? '',
+    lq: await lqip(other.poster),
+  };
+  if (other.kind === 'video')
+    video = {
+      ...base,
+      kind: 'video',
+      src: videoUrl(other.video),
+      type: videoType(other.video),
+      sound: other.sound === true,
+    };
+  else if (other.kind === 'youtube')
+    video = {
+      ...base,
+      kind: 'youtube',
+      href: `https://www.youtube.com/watch?v=${other.youtube}`,
+      embed: `https://www.youtube-nocookie.com/embed/${other.youtube}?autoplay=1&rel=0&modestbranding=1&playsinline=1`,
+    };
+  else
+    video = {
+      ...base,
+      kind: 'vimeo',
+      href: `https://vimeo.com/${other.vimeo}`,
+      embed: `https://player.vimeo.com/video/${other.vimeo}?autoplay=1&dnt=1&title=0&byline=0&portrait=0`,
+    };
+}
+---
+
+{photoData.length > 0 && (
+  <div class:list={['media', `media--${photoData.length}`]}>
+    {photoData.map((p, i) => (
+      <a
+        class="media__item"
+        href={p.full}
+        data-lightbox={group}
+        data-alt={p.alt}
+        data-w={p.img.width}
+        data-h={p.img.height}
+      >
+        <img
+          class="media__lqip"
+          src={p.lq}
+          alt=""
+          aria-hidden="true"
+          width={p.img.width}
+          height={p.img.height}
+        />
+        <Picture
+          class="media__img"
+          src={p.img}
+          alt={p.alt}
+          formats={['avif', 'webp']}
+          fallbackFormat="jpg"
+          widths={p.widths}
+          sizes={p.sizes}
+          quality={80}
+          loading={eager && i === 0 ? 'eager' : 'lazy'}
+          fetchpriority={eager && i === 0 ? 'high' : undefined}
+          decoding="async"
+        />
+      </a>
+    ))}
+  </div>
+)}
+
+{video && video.kind === 'video' && (
+  <div class="media media--video" data-video>
+    <img
+      class="media__lqip"
+      src={video.lq}
+      alt=""
+      aria-hidden="true"
+      width={video.posterW}
+      height={video.posterH}
+    />
+    <video
+      class="media__img media__video"
+      muted
+      loop
+      playsinline
+      controls
+      preload="none"
+      poster={video.poster}
+      width={video.posterW}
+      height={video.posterH}
+      aria-label={video.alt}
+    >
+      <source src={video.src} type={video.type} />
+    </video>
+    {video.sound && (
+      <button
+        type="button"
+        class="media__mute"
+        data-mute
+        aria-pressed="false"
+        data-label-on={t(locale, 'unmute')}
+        data-label-off={t(locale, 'mute')}
+      >
+        <span class="visually-hidden">{t(locale, 'unmute')}</span>
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          aria-hidden="true"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" />
+          <path class="media__mute-off" d="M16 9.5l5 5M21 9.5l-5 5" />
+          <path class="media__mute-on" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" />
+        </svg>
+      </button>
+    )}
+  </div>
+)}
+
+{video && video.kind !== 'video' && (
+  <div class="media media--video">
+    <a
+      class="media__facade"
+      href={video.href}
+      data-embed={video.embed}
+      data-title={video.alt}
+      target="_blank"
+      rel="noopener"
+    >
+      <img
+        class="media__lqip"
+        src={video.lq}
+        alt=""
+        aria-hidden="true"
+        width={video.posterW}
+        height={video.posterH}
+      />
+      <img
+        class="media__img"
+        src={video.poster}
+        alt={video.alt}
+        width={video.posterW}
+        height={video.posterH}
+        loading="lazy"
+        decoding="async"
+      />
+      <span class="media__play" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="64" height="64">
+          <path d="M24 18v28l22-14z" fill="#fff" />
+        </svg>
+      </span>
+      <span class="visually-hidden">
+        {t(locale, 'playVideo')}: {video.alt}
+      </span>
+    </a>
+  </div>
+)}
+
+<style>
+  .media {
+    position: relative;
+    display: grid;
+    gap: 6px;
+    border-radius: 2px;
+  }
+  .media__item,
+  .media__facade,
+  .media--video {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 2px;
+    background: rgb(255 255 255 / 0.04);
+  }
+  .media__item {
+    cursor: zoom-in;
+  }
+  .media__lqip {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(14px);
+    transform: scale(1.1);
+  }
+  .media__item :global(picture),
+  .media__item :global(img.media__img),
+  .media__img {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  :global(html.js) .media :global(.media__img) {
+    opacity: 0;
+    transition: opacity 0.6s var(--ease);
+  }
+  :global(html.js) .media :global(.media__img.is-loaded) {
+    opacity: 1;
+  }
+
+  /* Asymmetric mini-grid: one large, two small. */
+  .media--2 {
+    grid-template-columns: 3fr 2fr;
+  }
+  .media--3 {
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+  .media--3 .media__item:first-child {
+    grid-row: span 2;
+  }
+  .media--2 .media__item,
+  .media--3 .media__item {
+    aspect-ratio: 4 / 5;
+  }
+  .media--3 .media__item:not(:first-child) {
+    aspect-ratio: auto;
+  }
+  .media--2 .media__item :global(picture),
+  .media--3 .media__item :global(picture),
+  .media--2 .media__item :global(img.media__img),
+  .media--3 .media__item :global(img.media__img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .media__video {
+    background: transparent;
+  }
+  .media__play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    transition: transform 0.3s var(--ease);
+  }
+  .media__play svg {
+    width: clamp(44px, 10%, 72px);
+    height: auto;
+  }
+  .media__facade:hover .media__play,
+  .media__facade:focus-visible .media__play {
+    transform: scale(1.08);
+  }
+  .media__facade :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .media__mute {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    color: var(--white);
+    background: rgb(0 0 0 / 0.45);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.25s var(--ease);
+  }
+  .media--video:hover .media__mute,
+  .media__mute:focus-visible,
+  :global(.is-tapped) .media__mute {
+    opacity: 1;
+  }
+  .media__mute-on {
+    display: none;
+  }
+  .media__mute[aria-pressed='true'] .media__mute-on {
+    display: inline;
+  }
+  .media__mute[aria-pressed='true'] .media__mute-off {
+    display: none;
+  }
+</style>

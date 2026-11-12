@@ -1,0 +1,69 @@
+---
+import '../styles/global.css';
+import fontUrl from '../assets/fonts/inter-latin-greek.woff2?url';
+import Seo from '../components/Seo.astro';
+import LangSwitch from '../components/LangSwitch.astro';
+import { site, type Locale } from '../config/site';
+import type { Section } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+  /** '' = home, 'privacy' = privacy page, '404' = not found */
+  page: '' | 'privacy' | '404';
+  title?: string;
+  jsonLd?: object[];
+  /** Which section the switcher should start linking to. */
+  initialSection?: Section | null;
+}
+
+const { locale, page, title, jsonLd = [], initialSection = null } = Astro.props;
+const c = site.colors;
+const l = site.logo;
+const tl = site.timeline;
+const tk = site.talk;
+
+// Every tunable from site.ts that CSS needs, exposed as custom properties.
+const tokens = `
+@font-face{font-family:'Inter';font-style:normal;font-weight:300 500;font-display:swap;src:url(${fontUrl}) format('woff2');}
+:root{
+--white:${c.white};--black:${c.black};--ink-70:${c.ink70};--ink-15:${c.ink15};--paper-70:${c.paper70};--paper-25:${c.paper25};
+--ease:${site.ease};
+--logo-h:${l.sizeClamp};
+--logo-breathe-scale:${l.breathe.scale};--logo-breathe-ms:${l.breathe.periodMs}ms;
+--ripple-scale:${l.ripple.maxScale};--ripple-opacity:${l.ripple.opacity};--ripple-ms:${l.ripple.durationMs}ms;
+--nudge-ms:${l.nudge.durationMs}ms;--nudge-lift:${-l.nudge.liftPx}px;--nudge-rot:${l.nudge.rotateDeg}deg;
+--press-scale:${l.pressScale};--press-ms:${l.pressMs}ms;
+--bowtie-deg:${l.bowtieWiggleDeg}deg;--bowtie-ms:${l.bowtieWiggleMs}ms;
+--slogan-in:${l.sloganInMs}ms;--slogan-out:${l.sloganOutMs}ms;--slogan-delay:${l.sloganDelayMs}ms;--slogan-lift:${l.sloganLiftPx}px;
+--rm-logo-opacity:${l.reducedMotionLogoOpacity};
+--cue-h:${site.scrollCue.heightPx}px;--cue-ms:${site.scrollCue.periodMs}ms;
+--tl-gap:${tl.entryGap};--tl-reveal-ms:${tl.revealMs}ms;--tl-reveal-y:${tl.revealDistancePx}px;--tl-reveal-x:${tl.revealSideOffsetPx}px;--tl-media-delay:${tl.mediaDelayMs}ms;--tl-dot-ms:${tl.dotPopMs}ms;
+--talk-breathe:${tk.breatheScale};--talk-lift:${-tk.openLiftVh}vh;--talk-scale:${tk.openScale};--talk-stagger:${tk.itemStaggerMs}ms;--talk-item-ms:${tk.itemMs}ms;--talk-item-y:${tk.itemLiftPx}px;--talk-underline-ms:${tk.underlineMs}ms;--talk-gap:${tk.rowGapPx}px;
+--lang-edge:${site.langSwitch.edgePx}px;--lang-pulse-ms:${site.langSwitch.hintPulseMs}ms;
+}`.replace(/\n/g, '');
+---
+
+<!doctype html>
+<html lang={locale} class="no-js" data-page={page || 'home'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script is:inline>
+      document.documentElement.classList.replace('no-js', 'js');
+    </script>
+    <link rel="preload" href={fontUrl} as="font" type="font/woff2" crossorigin />
+    <style is:inline set:html={tokens} />
+    <Seo locale={locale} page={page} title={title} jsonLd={jsonLd} />
+    {site.analyticsToken && (
+      <script
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={JSON.stringify({ token: site.analyticsToken })}
+      />
+    )}
+  </head>
+  <body>
+    <LangSwitch locale={locale} page={page} initialSection={initialSection} />
+    <slot />
+  </body>
+</html>

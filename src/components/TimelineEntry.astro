@@ -1,0 +1,42 @@
+---
+import TimelineMedia from './TimelineMedia.astro';
+import type { Locale } from '../config/site';
+import { pick } from '../i18n/utils';
+import type { Moment } from '../lib/timeline-validate';
+
+interface Props {
+  moment: Moment;
+  locale: Locale;
+  side: 'left' | 'right';
+  eagerMedia: boolean;
+}
+const { moment, locale, side, eagerMedia } = Astro.props;
+const label = pick(moment.label, locale) ?? String(moment.year);
+const title = pick(moment.title, locale)!;
+const text = pick(moment.text, locale);
+// mark text that falls back to the other language with the right lang attribute
+const titleLang = moment.title[locale] ? undefined : locale === 'el' ? 'en' : 'el';
+const textLang = moment.text && !moment.text[locale] ? (locale === 'el' ? 'en' : 'el') : undefined;
+---
+
+<li class:list={['entry', `entry--${side}`]} data-reveal>
+  <span class="entry__dot" aria-hidden="true"></span>
+  <article class="entry__card">
+    <p class="entry__year">
+      <time datetime={moment.date}>{label}</time>
+    </p>
+    <h3 class="entry__title" lang={titleLang}>
+      {title}
+    </h3>
+    {text && (
+      <p class="entry__text" lang={textLang}>
+        {text}
+      </p>
+    )}
+    {moment.media.length > 0 && (
+      <div class="entry__media">
+        <TimelineMedia media={moment.media} locale={locale} eager={eagerMedia} group={moment.id} />
+      </div>
+    )}
+  </article>
+</li>

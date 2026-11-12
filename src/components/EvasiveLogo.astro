@@ -1,0 +1,244 @@
+---
+import logo from '../assets/brand/logo-paths.json';
+import { site, type Locale } from '../config/site';
+import { t } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const config = JSON.stringify({ ...site.logo });
+---
+
+<div class="logo" data-evasive-logo data-config={config}>
+  <p id="slogan" class="slogan" lang="en" data-slogan aria-hidden="true">
+    <span data-slogan-text>{site.slogan}</span>
+  </p>
+  <h1 class="logo__h1">
+    <button
+      type="button"
+      class="logo__button"
+      aria-describedby="slogan"
+      aria-label={t(locale, 'logoLabel')}
+      data-logo-button
+    >
+      <span class="logo__mover" data-logo-mover>
+        <span class="logo__nudge">
+          <span class="logo__ripple" aria-hidden="true"></span>
+          <span class="logo__squish">
+            <span class="logo__breathe">
+              <svg
+                class="logo__svg"
+                viewBox={logo.viewBox}
+                width={logo.width}
+                height={logo.height}
+                role="img"
+                aria-labelledby="logo-title"
+                focusable="false"
+              >
+                <title id="logo-title">PAPAFIOGOS</title>
+                <g id="face">
+                  <path fill-rule="evenodd" d={logo.face}></path>
+                </g>
+                <g id="bowtie">
+                  <path fill-rule="evenodd" d={logo.bowtie}></path>
+                </g>
+                <g id="wordmark">
+                  <path fill-rule="evenodd" d={logo.wordmark}></path>
+                </g>
+              </svg>
+            </span>
+          </span>
+        </span>
+      </span>
+    </button>
+  </h1>
+</div>
+
+<style>
+  .logo {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+  .logo__h1 {
+    font-size: inherit;
+    line-height: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .logo__button {
+    display: block;
+    height: var(--logo-h);
+    aspect-ratio: 511 / 701;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+  .logo__button:focus-visible {
+    outline: 2px solid var(--black);
+    outline-offset: 6px;
+  }
+  .logo__mover,
+  .logo__nudge,
+  .logo__squish,
+  .logo__breathe {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .logo__mover {
+    will-change: transform;
+    transition: opacity var(--slogan-in) var(--ease);
+  }
+  .logo__svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--black);
+    overflow: visible;
+  }
+  /* Breathing — always alive, on every device (unless reduced motion). */
+  .logo__breathe {
+    animation: logo-breathe var(--logo-breathe-ms) ease-in-out infinite;
+    transform-origin: 50% 50%;
+  }
+  @keyframes logo-breathe {
+    50% {
+      transform: scale(var(--logo-breathe-scale));
+    }
+  }
+  /* Press feedback (touch). */
+  .logo__squish {
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  :global(.is-pressed) .logo__squish {
+    transform: scale(var(--press-scale));
+    transition-duration: var(--press-ms);
+    transition-timing-function: ease-out;
+  }
+  /* Ripple ring: a circle (an echo of the original round sticker). Touch only, until first tap. */
+  .logo__ripple {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: calc(var(--logo-h) * 1.05);
+    aspect-ratio: 1;
+    border: 1px solid var(--black);
+    border-radius: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: none;
+  }
+  :global(.has-hints) .logo__ripple {
+    animation: logo-ripple var(--logo-breathe-ms) var(--ease) infinite;
+    /* fire at the breath peak */
+    animation-delay: calc(var(--logo-breathe-ms) / 2);
+  }
+  @keyframes logo-ripple {
+    0% {
+      opacity: var(--ripple-opacity);
+      transform: translate(-50%, -50%) scale(1);
+    }
+    43.75% {
+      /* 1.4 s of a 3.2 s cycle */
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(var(--ripple-scale));
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(var(--ripple-scale));
+    }
+  }
+  /* Curious nudge: a tiny hop. */
+  :global(.is-nudging) .logo__nudge {
+    animation: logo-nudge var(--nudge-ms) cubic-bezier(0.3, 0, 0.3, 1) 1;
+  }
+  @keyframes logo-nudge {
+    40% {
+      transform: translateY(var(--nudge-lift)) rotate(var(--nudge-rot));
+    }
+    70% {
+      transform: translateY(1px) rotate(calc(var(--nudge-rot) * -0.4));
+    }
+  }
+  /* Bow-tie wink: rotate around the knot while the rest stays still. */
+  #bowtie {
+    transform-box: view-box;
+    transform-origin: 249px 329px;
+  }
+  :global(.is-nudging) #bowtie,
+  :global(.is-wiggling) #bowtie {
+    animation: bowtie-wiggle var(--bowtie-ms) ease-in-out 1;
+  }
+  @keyframes bowtie-wiggle {
+    25% {
+      transform: rotate(var(--bowtie-deg));
+    }
+    60% {
+      transform: rotate(calc(var(--bowtie-deg) * -1));
+    }
+    85% {
+      transform: rotate(calc(var(--bowtie-deg) * 0.4));
+    }
+  }
+
+  /* Slogan: sits exactly at the logo's home centre, hidden until the logo moves away. */
+  .slogan {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 0 1rem;
+    font-size: clamp(1.25rem, 1rem + 1.5vw, 2.25rem);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(var(--slogan-lift));
+    transition:
+      opacity var(--slogan-out) var(--ease),
+      transform var(--slogan-out) var(--ease);
+    pointer-events: none;
+    user-select: none;
+  }
+  :global(.is-away) .slogan {
+    opacity: 1;
+    transform: none;
+    transition-duration: var(--slogan-in);
+    transition-delay: var(--slogan-delay);
+  }
+
+  /* No JS: no breathing (nothing can happen on tap anyway). */
+  :global(html.no-js) .logo__breathe {
+    animation: none;
+  }
+
+  /* Reduced motion: no movement at all, just a crossfade. */
+  @media (prefers-reduced-motion: reduce) {
+    .logo__breathe,
+    .logo__ripple,
+    #bowtie {
+      animation: none !important;
+    }
+    :global(.is-pressed) .logo__squish {
+      transform: none;
+    }
+    .slogan {
+      transform: none;
+    }
+    :global(.is-away) .logo__mover {
+      opacity: var(--rm-logo-opacity);
+    }
+    :global(.is-away) .logo__h1 {
+      z-index: 0;
+    }
+  }
+</style>
+
+<script>
+  import { initEvasiveLogo } from '../lib/evasive-logo';
+  document.querySelectorAll<HTMLElement>('[data-evasive-logo]').forEach(initEvasiveLogo);
+</script>

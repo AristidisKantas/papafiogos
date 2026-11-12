@@ -1,0 +1,68 @@
+---
+import { site, type Locale } from '../config/site';
+import { absolute, pagePath } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+  page: '' | 'privacy' | '404';
+  title?: string;
+  jsonLd?: object[];
+}
+
+const { locale, page, title, jsonLd = [] } = Astro.props;
+const fullTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.slogan}`;
+const description = site.description[locale];
+const isRealPage = page !== '404';
+const canonical = isRealPage ? absolute(pagePath(locale, page)) : undefined;
+const alternates = isRealPage
+  ? site.locales.map((l) => ({ lang: l, href: absolute(pagePath(l, page)) }))
+  : [];
+const ogImage = absolute('/og-image.jpg');
+const ogLocale = locale === 'el' ? 'el_GR' : 'en_US';
+const ogAlt = locale === 'el' ? 'en_US' : 'el_GR';
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+{!isRealPage && <meta name="robots" content="noindex" />}
+{canonical && <link rel="canonical" href={canonical} />}
+{alternates.map((a) => (
+  <link rel="alternate" hreflang={a.lang} href={a.href} />
+))}
+{isRealPage && (
+  <link rel="alternate" hreflang="x-default" href={absolute(pagePath(site.defaultLocale, page))} />
+)}
+<meta name="theme-color" content="#ffffff" />
+<meta name="color-scheme" content="only light" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+{canonical && <meta property="og:url" content={canonical} />}
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={site.name} />
+<meta property="og:locale" content={ogLocale} />
+<meta property="og:locale:alternate" content={ogAlt} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+{jsonLd.length > 0 && (
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': jsonLd }).replace(
+      /</g,
+      '\\u003c',
+    )}
+  />
+)}

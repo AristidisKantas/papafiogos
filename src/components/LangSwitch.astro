@@ -1,0 +1,98 @@
+---
+import { site, type Locale } from '../config/site';
+import { anchors, pagePath, t, type Section } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+  page: '' | 'privacy' | '404';
+  initialSection: Section | null;
+}
+const { locale, page, initialSection } = Astro.props;
+const target = page === '404' ? '' : page;
+const labels: Record<Locale, string> = { el: 'ΕΛ', en: 'EN' };
+const hrefFor = (l: Locale) =>
+  pagePath(l, target) + (initialSection && page === '' ? `#${anchors[l][initialSection]}` : '');
+---
+
+<nav class="lang" aria-label={t(locale, 'languageNav')} data-lang-switch data-locale={locale}>
+  {site.locales.map((l, i) => (
+    <>
+      {i > 0 && (
+        <span class="lang__sep" aria-hidden="true">
+          ·
+        </span>
+      )}
+      <a
+        class:list={['lang__link', { 'is-active': l === locale }]}
+        href={hrefFor(l)}
+        hreflang={l}
+        lang={l}
+        aria-current={l === locale ? 'true' : undefined}
+        data-lang={l}
+        data-base={pagePath(l, target)}
+      >
+        {labels[l]}
+      </a>
+    </>
+  ))}
+</nav>
+
+<style>
+  .lang {
+    position: fixed;
+    z-index: 50;
+    top: calc(var(--lang-edge) + env(safe-area-inset-top));
+    right: calc(var(--lang-edge) + env(safe-area-inset-right));
+    display: flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    line-height: 1;
+    color: var(--white);
+    mix-blend-mode: difference; /* white over black, black over white */
+  }
+  .lang__sep {
+    opacity: 0.4;
+    padding: 0 0.15em 0 0.3em;
+  }
+  .lang__link {
+    position: relative;
+    display: inline-block;
+    padding: 0.25em 0 0.25em 0.15em; /* letter-spacing trails; balance it */
+    text-decoration: none;
+    opacity: 0.4;
+    transition: opacity 0.2s var(--ease);
+  }
+  /* invisible 48×48 hit area */
+  .lang__link::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 48px;
+    height: 48px;
+    transform: translate(-50%, -50%);
+  }
+  .lang__link:hover,
+  .lang__link:focus-visible,
+  .lang__link.is-active {
+    opacity: 1;
+  }
+  .lang__link:focus-visible {
+    outline-offset: 4px;
+  }
+  .lang__link.is-hint {
+    animation: lang-hint var(--lang-pulse-ms) var(--ease) 1;
+  }
+  @keyframes lang-hint {
+    50% {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  import { initLangSwitch } from '../lib/lang-switch';
+  initLangSwitch();
+</script>

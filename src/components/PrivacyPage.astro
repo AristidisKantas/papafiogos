@@ -1,0 +1,75 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, type Locale } from '../config/site';
+import { homePath, t } from '../i18n/utils';
+import { strings } from '../i18n/strings';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+---
+
+<Base locale={locale} page="privacy" title={t(locale, 'privacyTitle')}>
+  <main class="simple">
+    <a class="simple__home" href={homePath(locale)} aria-label={t(locale, 'home')}>
+      {site.name}
+    </a>
+    <h1>{t(locale, 'privacyTitle')}</h1>
+    {strings[locale].privacyBody.map((p) => (
+      <p>{p}</p>
+    ))}
+    <p class="simple__back">
+      <a href={homePath(locale)}>← {t(locale, 'home')}</a>
+    </p>
+  </main>
+</Base>
+
+<style>
+  .simple {
+    min-height: 100vh;
+    min-height: 100svh;
+    max-width: 38rem;
+    margin: 0 auto;
+    padding: calc(6rem + env(safe-area-inset-top)) 1.5rem 4rem;
+    font-size: clamp(0.95rem, 0.9rem + 0.25vw, 1.1rem);
+    line-height: 1.6;
+  }
+  .simple__home {
+    position: fixed;
+    top: calc(24px + env(safe-area-inset-top));
+    left: calc(24px + env(safe-area-inset-left));
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-decoration: none;
+    padding: 0.9rem 0;
+    margin: -0.9rem 0;
+  }
+  h1 {
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+  p {
+    color: var(--ink-70);
+    max-width: 60ch;
+  }
+  p + p {
+    margin-top: 1em;
+  }
+  .simple__back {
+    margin-top: 3rem !important;
+  }
+  .simple__back a {
+    text-decoration: none;
+    color: var(--black);
+    display: inline-block;
+    padding: 0.75rem 0;
+  }
+  .simple__back a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

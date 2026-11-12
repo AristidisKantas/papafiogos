@@ -1,0 +1,9 @@
+dist
+node_modules
+.astro
+scripts/vendor
+src/assets
+public
+package-lock.json
+src/content/timeline
+README.md

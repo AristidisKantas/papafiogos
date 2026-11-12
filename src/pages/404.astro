@@ -1,0 +1,70 @@
+---
+/**
+ * One static 404 for both languages. It starts in Greek and switches to
+ * English (text + link) when the missing URL was under /en/.
+ */
+import Base from '../layouts/Base.astro';
+import logo from '../assets/brand/logo-paths.json';
+import { t } from '../i18n/utils';
+---
+
+<Base locale="el" page="404" title="404">
+  <main class="nf">
+    <a href="/" class="nf__logo" aria-label="PAPAFIOGOS" data-nf-home>
+      <svg viewBox={logo.viewBox} width="511" height="701" role="img" aria-labelledby="nf-title">
+        <title id="nf-title">PAPAFIOGOS</title>
+        <path fill-rule="evenodd" d={logo.face}></path>
+        <path fill-rule="evenodd" d={logo.bowtie}></path>
+        <path fill-rule="evenodd" d={logo.wordmark}></path>
+      </svg>
+    </a>
+    <p>
+      <a href="/" data-nf-home data-en={t('en', 'notFound')}>
+        {t('el', 'notFound')}
+      </a>
+    </p>
+  </main>
+</Base>
+
+<style>
+  .nf {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    text-align: center;
+  }
+  .nf__logo svg {
+    height: clamp(96px, 18vmin, 160px);
+    width: auto;
+  }
+  p {
+    font-size: clamp(1rem, 0.95rem + 0.4vw, 1.25rem);
+  }
+  p a {
+    display: inline-block;
+    text-decoration: none;
+    padding: 0.75rem 0;
+    background: linear-gradient(currentColor, currentColor) 0 calc(100% - 0.6rem) / 100% 1px
+      no-repeat;
+  }
+</style>
+
+<script>
+  if (location.pathname === '/en' || location.pathname.startsWith('/en/')) {
+    document.documentElement.lang = 'en';
+    document.querySelectorAll<HTMLAnchorElement>('[data-nf-home]').forEach((a) => {
+      a.href = '/en/';
+      if (a.dataset.en) a.textContent = a.dataset.en;
+    });
+    document.querySelectorAll<HTMLAnchorElement>('[data-lang-switch] a').forEach((a) => {
+      const on = a.dataset.lang === 'en';
+      a.classList.toggle('is-active', on);
+      if (on) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    });
+  }
+</script>

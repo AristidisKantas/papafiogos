@@ -1,0 +1,60 @@
+[
+  {
+    "date": "2009-06",
+    "label": { "el": "Καλοκαίρι 2009", "en": "Summer 2009" },
+    "title": { "el": "Η πρώτη κάμερα", "en": "The first camera" },
+    "text": {
+      "el": "Ο θείος μου μου έδωσε την παλιά του κάμερα «μόνο για το Σαββατοκύριακο». Δεν του την επέστρεψα ποτέ.",
+      "en": "My uncle handed me his old camera \"just for the weekend\". I never gave it back."
+    },
+    "media": [
+      {
+        "photo": "examples/example-first-camera.jpg",
+        "alt": { "el": "Έφηβος με μια δανεική κάμερα", "en": "Teenage me with a borrowed camera" }
+      }
+    ]
+  },
+  {
+    "date": "2014-09-20",
+    "title": { "el": "Ο πρώτος γάμος", "en": "The first wedding" },
+    "text": {
+      "el": "Δώδεκα ώρες, τρεις μπαταρίες, ένα ζευγάρι που ακόμα μου στέλνει ευχές κάθε Χριστούγεννα.",
+      "en": "Twelve hours, three batteries, and a couple who still send me a card every Christmas."
+    },
+    "media": [
+      { "photo": "examples/example-wedding-1.jpg", "alt": { "el": "Το ζευγάρι στην εκκλησία", "en": "The couple at the church" } },
+      { "photo": "examples/example-wedding-2.jpg", "alt": { "el": "Τα δαχτυλίδια", "en": "The rings" } },
+      { "photo": "examples/example-wedding-3.jpg", "alt": { "el": "Ο πρώτος χορός", "en": "The first dance" } }
+    ]
+  },
+  {
+    "date": "2024-08",
+    "title": { "el": "Νησί", "en": "Island" },
+    "text": { "el": "Μια εβδομάδα, μια βάρκα, μια κάμερα.", "en": "One week, one boat, one camera." },
+    "media": [
+      {
+        "video": "examples/example-island-clip.mp4",
+        "poster": "examples/example-island-poster.jpg",
+        "alt": { "el": "Πίσω από τις κάμερες στο νησί", "en": "Behind the scenes on the island" }
+      }
+    ]
+  },
+  {
+    "date": "2025",
+    "title": { "el": "Η πρώτη ταινία", "en": "The first short film" },
+    "text": { "el": "Ένα μεγαλύτερο βίντεο, ανεβασμένο στο YouTube.", "en": "A longer video, hosted on YouTube." },
+    "media": [
+      {
+        "youtube": "aqz-KE-bpKQ",
+        "poster": "examples/example-film-poster.jpg",
+        "alt": { "el": "Καρέ από την ταινία", "en": "A still from the film" }
+      }
+    ]
+  },
+  {
+    "date": "2026",
+    "title": { "el": "Κρυφό παράδειγμα", "en": "Hidden example" },
+    "text": { "el": "Αυτό δεν εμφανίζεται γιατί έχει \"hidden\": true." },
+    "hidden": true
+  }
+]

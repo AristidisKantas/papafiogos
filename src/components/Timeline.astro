@@ -1,0 +1,398 @@
+---
+import { getCollection } from 'astro:content';
+import TimelineEntry from './TimelineEntry.astro';
+import Lightbox from './Lightbox.astro';
+import { site, type Locale } from '../config/site';
+import { anchors, t } from '../i18n/utils';
+import type { Moment } from '../lib/timeline-validate';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const all = (await getCollection('timeline')).map((e) => e.data as unknown as Moment);
+const moments = all
+  .filter((m) => !m.hidden)
+  .sort((a, b) => a.date.localeCompare(b.date) || a.index - b.index);
+if (site.timeline.order === 'newest-first') moments.reverse();
+
+const firstWithMedia = moments.findIndex((m) => m.media.length > 0);
+const empty = moments.length === 0;
+const showBookends = site.timeline.bookends;
+const [startLabel, endLabel] =
+  site.timeline.order === 'newest-first'
+    ? [t(locale, 'today'), String(site.timeline.startYear)]
+    : [String(site.timeline.startYear), t(locale, 'today')];
+const headingId = 'timeline-heading';
+---
+
+<section
+  id={anchors[locale].story}
+  class:list={['timeline', { 'timeline--empty': empty }]}
+  aria-labelledby={headingId}
+  data-anchors={JSON.stringify({ el: anchors.el.story, en: anchors.en.story })}
+  data-timeline
+>
+  <h2
+    id={headingId}
+    class:list={['timeline__heading', { 'visually-hidden': !site.timeline.showHeading }]}
+  >
+    {t(locale, 'timelineHeading')}
+  </h2>
+
+  <div class="timeline__track">
+    <div class="timeline__line" aria-hidden="true">
+      <span class="timeline__fill" data-fill></span>
+    </div>
+
+    {showBookends && (
+      <p class="bookend bookend--start" data-reveal>
+        <span class="entry__dot" aria-hidden="true" />
+        <span class="bookend__label">{startLabel}</span>
+      </p>
+    )}
+
+    {empty ? (
+      <p class="timeline__empty" data-reveal>
+        {t(locale, 'storyBeingWritten')}
+      </p>
+    ) : (
+      <ol class="timeline__list">
+        {moments.map((m, i) => (
+          <TimelineEntry
+            moment={m}
+            locale={locale}
+            side={i % 2 === 0 ? 'left' : 'right'}
+            eagerMedia={i === firstWithMedia}
+          />
+        ))}
+      </ol>
+    )}
+
+    {showBookends && (
+      <p class="bookend bookend--end" data-reveal>
+        <span class="entry__dot" aria-hidden="true" />
+        <span class="bookend__label">{endLabel}</span>
+      </p>
+    )}
+  </div>
+  {!empty && <Lightbox locale={locale} />}
+</section>
+
+<style>
+  .timeline {
+    --line-x: calc(20px + env(safe-area-inset-left));
+    --dot: 8px;
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    background: var(--black);
+    color: var(--white);
+    padding: clamp(4rem, 12vh, 8rem) calc(20px + env(safe-area-inset-right)) clamp(4rem, 12vh, 8rem)
+      0;
+    display: flex;
+    flex-direction: column;
+  }
+  .timeline--empty {
+    height: 100vh;
+    height: 100svh;
+  }
+  .timeline__heading {
+    font-size: clamp(0.75rem, 0.7rem + 0.3vw, 0.9rem);
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase; /* lang="el" drops the tonos: Η ΙΣΤΟΡΙΑ */
+    color: var(--paper-70);
+    text-align: center;
+    padding-left: 0.3em; /* balance the trailing letter-spacing */
+    margin-bottom: clamp(2.5rem, 7vh, 5rem);
+  }
+  .timeline__track {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .timeline__line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--line-x);
+    width: 1px;
+    background: var(--paper-25);
+    overflow: hidden;
+  }
+  .timeline__fill {
+    position: absolute;
+    inset: 0;
+    background: var(--white);
+    transform-origin: 50% 0;
+    transform: scaleY(var(--fill, 0));
+  }
+  @supports (animation-timeline: view()) {
+    .timeline__fill {
+      animation: line-fill linear both;
+      animation-timeline: view();
+      /* fill reaches the middle of the screen */
+      animation-range: cover 50vh cover calc(100% - 50vh);
+    }
+    @keyframes line-fill {
+      from {
+        transform: scaleY(0);
+      }
+      to {
+        transform: scaleY(1);
+      }
+    }
+  }
+
+  /* ---------- bookends + empty state ---------- */
+  .bookend {
+    position: relative;
+    padding-left: calc(var(--line-x) + 28px);
+    font-size: clamp(0.75rem, 0.7rem + 0.3vw, 0.9rem);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    line-height: 1;
+    color: var(--paper-70);
+  }
+  .bookend--end {
+    margin-top: auto;
+    padding-top: var(--tl-gap);
+  }
+  .bookend :global(.entry__dot) {
+    top: auto;
+    bottom: 0.5em;
+    transform: translate(-50%, 50%);
+  }
+  .timeline__empty {
+    margin: auto 0;
+    padding: 3rem 0 3rem calc(var(--line-x) + 28px);
+    font-size: clamp(1.1rem, 1rem + 0.6vw, 1.5rem);
+    font-weight: 300;
+    color: var(--paper-70);
+  }
+  .timeline__list {
+    list-style: none;
+    padding: 0;
+    margin: var(--tl-gap) 0 0;
+    display: grid;
+    gap: var(--tl-gap);
+  }
+
+  /* ---------- entries (mobile first: everything right of the left line) ---------- */
+  .timeline :global(.entry) {
+    position: relative;
+    padding-left: calc(var(--line-x) + 28px);
+  }
+  .timeline :global(.entry__dot) {
+    position: absolute;
+    left: var(--line-x);
+    top: 0.55em;
+    width: var(--dot);
+    height: var(--dot);
+    margin-left: 0.5px;
+    border-radius: 50%;
+    background: var(--white);
+    box-shadow: 0 0 0 1px var(--paper-25); /* the 1 px ring (not a drop shadow) */
+    transform: translate(-50%, -50%);
+  }
+  .timeline :global(.entry__card) {
+    display: flex;
+    flex-direction: column;
+  }
+  .timeline :global(.entry__year) {
+    order: 0;
+    font-size: clamp(0.75rem, 0.7rem + 0.3vw, 0.9rem);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    line-height: 1.1;
+    color: var(--paper-70);
+  }
+  .timeline :global(.entry__title) {
+    order: 1;
+    margin-top: 0.6rem;
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .timeline :global(.entry__text) {
+    order: 2;
+    margin-top: 0.6rem;
+    max-width: 42ch;
+    font-size: clamp(0.95rem, 0.9rem + 0.25vw, 1.1rem);
+    line-height: 1.6;
+    color: var(--paper-70);
+    text-wrap: pretty;
+  }
+  .timeline :global(.entry__media) {
+    order: 3;
+    margin-top: 1.25rem;
+  }
+
+  @media (max-width: 767.98px) {
+    /* media full width of the column, under the year so the dot stays aligned with it */
+    .timeline :global(.entry__media) {
+      order: 0;
+      margin: 0.9rem 0 0.2rem;
+    }
+  }
+
+  /* ---------- desktop / tablet: centre line, alternating ---------- */
+  @media (min-width: 768px) {
+    .timeline {
+      --line-x: 50%;
+      padding-left: 4%;
+      padding-right: 4%;
+    }
+    .timeline :global(.entry) {
+      padding-left: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 8%;
+    }
+    .timeline :global(.entry--left .entry__card) {
+      grid-column: 1;
+      text-align: right;
+      align-items: flex-end;
+    }
+    .timeline :global(.entry--right .entry__card) {
+      grid-column: 2;
+    }
+    .timeline :global(.entry__card) {
+      width: 100%;
+    }
+    .timeline :global(.entry__media) {
+      width: 100%;
+    }
+    .bookend {
+      padding-left: 0;
+      text-align: center;
+      padding-top: 1.4rem;
+    }
+    .bookend :global(.entry__dot) {
+      top: 0;
+      bottom: auto;
+      transform: translate(-50%, -50%);
+    }
+    .bookend--start {
+      padding-top: 1.4rem;
+    }
+    .bookend--end {
+      padding-top: calc(var(--tl-gap) + 1.4rem);
+    }
+    .bookend--end :global(.entry__dot) {
+      top: auto;
+      bottom: calc(1em + 1.4rem);
+      transform: translate(-50%, 50%);
+    }
+    .bookend--end {
+      display: flex;
+      flex-direction: column-reverse;
+      padding-top: var(--tl-gap);
+      gap: 1.4rem;
+    }
+    .bookend--end :global(.entry__dot) {
+      position: static;
+      margin: 0 auto;
+      transform: none;
+    }
+    .bookend--start {
+      display: flex;
+      flex-direction: column;
+      padding-top: 0;
+      gap: 1.4rem;
+    }
+    .bookend--start :global(.entry__dot) {
+      position: static;
+      margin: 0 auto;
+      transform: none;
+    }
+    .timeline__empty {
+      padding: 3rem 0;
+      text-align: center;
+    }
+    .timeline__empty {
+      /* sits on the line: a black band interrupts it behind the words */
+      position: relative;
+      align-self: center;
+      background: var(--black);
+      padding: 1.25rem 1.5rem;
+    }
+  }
+
+  /* ---------- reveal motion ---------- */
+  :global(html.js) .timeline [data-reveal] {
+    --rx: 0px;
+  }
+  :global(html.js) .timeline :global(.entry--left) {
+    --rx: calc(var(--tl-reveal-x) * -1);
+  }
+  :global(html.js) .timeline :global(.entry--right) {
+    --rx: var(--tl-reveal-x);
+  }
+  @media (max-width: 767.98px) {
+    :global(html.js) .timeline :global(.entry--left) {
+      --rx: var(--tl-reveal-x);
+    }
+  }
+  :global(html.js) .timeline [data-reveal]:not(.is-in) :global(.entry__card > :not(.entry__media)),
+  :global(html.js) .timeline [data-reveal]:not(.is-in) .bookend__label,
+  :global(html.js) .timeline .timeline__empty:not(.is-in) {
+    opacity: 0;
+    transform: translate(var(--rx), var(--tl-reveal-y));
+  }
+  :global(html.js) .timeline [data-reveal]:not(.is-in) :global(.entry__media) {
+    opacity: 0;
+    transform: translate(var(--rx), var(--tl-reveal-y));
+  }
+  :global(html.js) .timeline [data-reveal]:not(.is-in) :global(.entry__dot) {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  :global(html.js) .timeline .bookend:not(.is-in) :global(.entry__dot) {
+    transform: scale(0);
+  }
+  .timeline :global(.entry__card > *),
+  .timeline .bookend__label,
+  .timeline .timeline__empty {
+    transition:
+      opacity var(--tl-reveal-ms) var(--ease),
+      transform var(--tl-reveal-ms) var(--ease);
+  }
+  .timeline :global(.entry__media) {
+    transition-delay: var(--tl-media-delay) !important;
+  }
+  .timeline :global(.entry__dot) {
+    transition: transform var(--tl-dot-ms) cubic-bezier(0.34, 1.7, 0.64, 1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .timeline [data-reveal]:not(.is-in) :global(*),
+    :global(html.js) .timeline .timeline__empty:not(.is-in) {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    :global(html.js) .timeline [data-reveal]:not(.is-in) :global(.entry__dot) {
+      transform: translate(-50%, -50%) !important;
+    }
+    :global(html.js) .timeline .bookend:not(.is-in) :global(.entry__dot) {
+      transform: none !important;
+    }
+    .timeline__fill {
+      animation: none !important;
+      transform: scaleY(1);
+    }
+  }
+</style>
+
+<script>
+  import { initTimeline } from '../lib/timeline';
+  initTimeline();
+</script>

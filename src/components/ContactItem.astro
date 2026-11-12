@@ -1,0 +1,58 @@
+---
+/**
+ * One contact item. Email and phone are written into the page split up and
+ * reversed, and put back together by JS at runtime (simple anti-harvesting).
+ * A plain <noscript> list (in Contact.astro) covers visitors without JS.
+ */
+import Icon from './Icon.astro';
+import { site } from '../config/site';
+
+export type ContactKind = 'instagram' | 'email' | 'phone' | 'whatsapp';
+interface Props {
+  kind: ContactKind;
+  index: number;
+}
+const { kind, index } = Astro.props;
+const c = site.contact;
+const rev = (s: string) => [...s].reverse().join('');
+
+let href: string | undefined;
+let text = '';
+let scramble: string | undefined;
+let copyable = false;
+if (kind === 'instagram') {
+  href = `https://instagram.com/${c.instagram}`;
+  text = `@${c.instagram}`;
+} else if (kind === 'email') {
+  scramble = JSON.stringify({ t: 'mailto:', v: rev(c.email).split('@'), j: '@', o: 1 });
+  copyable = true;
+} else if (kind === 'phone') {
+  scramble = JSON.stringify({
+    t: 'tel:',
+    v: c.phone.split(' ').map(rev),
+    j: ' ',
+    h: rev(c.phoneHref),
+  });
+  copyable = true;
+} else if (kind === 'whatsapp') {
+  href = `https://wa.me/${c.phoneHref.replace('+', '')}`;
+  text = 'WhatsApp';
+}
+---
+
+<li class="ci" data-index={index}>
+  <a
+    class="ci__link"
+    href={href}
+    target={kind === 'instagram' || kind === 'whatsapp' ? '_blank' : undefined}
+    rel={kind === 'instagram' || kind === 'whatsapp' ? 'noopener' : undefined}
+    data-contact={kind}
+    data-scramble={scramble}
+    data-copy={copyable ? '' : undefined}
+  >
+    <Icon name={kind} />
+    <span class="ci__text" data-text>
+      {text}
+    </span>
+  </a>
+</li>

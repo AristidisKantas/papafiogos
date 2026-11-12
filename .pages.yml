@@ -1,0 +1,80 @@
+# Pages CMS (https://pagescms.org) — a form editor on top of timeline.json.
+# timeline.json stays the single source of truth; editing it by hand and
+# editing it through this form can be mixed freely.
+
+media:
+  input: src/content/timeline/media
+  output: ''
+
+content:
+  - name: timeline
+    label: Timeline / Ιστορία
+    type: file
+    path: src/content/timeline/timeline.json
+    format: json
+    list: true
+    fields:
+      - name: date
+        label: Date / Ημερομηνία
+        description: '"2009", "2009-06" or "2009-06-15". Used for ordering.'
+        type: string
+        required: true
+        pattern:
+          regex: '^\d{4}(-\d{2}(-\d{2})?)?$'
+          message: 'Write 2009, 2009-06 or 2009-06-15'
+      - name: label
+        label: Label (optional) / Ετικέτα
+        description: Shown instead of the year, e.g. "Summer 2009".
+        type: object
+        fields:
+          - { name: el, label: Ελληνικά, type: string }
+          - { name: en, label: English, type: string }
+      - name: title
+        label: Title / Τίτλος
+        type: object
+        required: true
+        fields:
+          - { name: el, label: Ελληνικά, type: string }
+          - { name: en, label: English, type: string }
+      - name: text
+        label: Text (1–3 sentences) / Κείμενο
+        type: object
+        fields:
+          - { name: el, label: Ελληνικά, type: text, options: { maxlength: 400 } }
+          - { name: en, label: English, type: text, options: { maxlength: 400 } }
+      - name: media
+        label: Media — up to 3 photos, OR 1 video, OR 1 YouTube/Vimeo
+        type: object
+        list: { max: 3 }
+        fields:
+          - name: photo
+            label: Photo / Φωτογραφία
+            type: image
+          - name: video
+            label: Short video (MP4, ≤ 20 s, ≤ 4 MB)
+            type: file
+            options: { extensions: [mp4, webm, m4v] }
+          - name: youtube
+            label: YouTube video id (e.g. dQw4w9WgXcQ)
+            type: string
+          - name: vimeo
+            label: Vimeo video id (e.g. 76979871)
+            type: string
+          - name: poster
+            label: Cover image (for video / YouTube / Vimeo)
+            type: image
+          - name: sound
+            label: The short video has meaningful sound (show a mute button)
+            type: boolean
+          - name: alt
+            label: Description (required) / Περιγραφή (υποχρεωτική)
+            description: What the photo or video shows. For accessibility and Google.
+            type: object
+            required: true
+            fields:
+              - { name: el, label: Ελληνικά, type: string }
+              - { name: en, label: English, type: string }
+      - name: hidden
+        label: Hide this moment (keep it for later) / Απόκρυψη
+        type: boolean
+        default: false

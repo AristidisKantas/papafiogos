@@ -1,0 +1,281 @@
+---
+import ContactItem from './ContactItem.astro';
+import { site, type Locale } from '../config/site';
+import { anchors, pagePath, t } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const c = site.contact;
+const year = new Date().getFullYear();
+const listId = 'contact-items';
+---
+
+<section
+  id={anchors[locale].contact}
+  class="contact section-full"
+  aria-labelledby="talk"
+  data-anchors={JSON.stringify({ el: anchors.el.contact, en: anchors.en.contact })}
+  data-contact-section
+  data-copied={t(locale, 'copied')}
+  data-copy-ms={c.copiedToastMs}
+  data-copy-enabled={c.copyToClipboard ? '1' : '0'}
+>
+  <div class="contact__center">
+    <h2 class="contact__h2">
+      <button
+        id="talk"
+        type="button"
+        class="talk"
+        aria-expanded="false"
+        aria-controls={listId}
+        data-talk
+      >
+        <span class="talk__breathe">
+          <span class="talk__text">{t(locale, 'talkToMe')}</span>
+        </span>
+      </button>
+    </h2>
+    <ul id={listId} class="contact__list" data-contact-list>
+      {c.items.map((kind, i) => (
+        <ContactItem kind={kind} index={i} />
+      ))}
+    </ul>
+    <noscript>
+      <ul class="contact__list contact__list--plain">
+        <li class="ci">
+          <a class="ci__link" href={`https://instagram.com/${c.instagram}`}>
+            @{c.instagram}
+          </a>
+        </li>
+        <li class="ci">
+          <a class="ci__link" href={`mailto:${c.email}`}>
+            {c.email}
+          </a>
+        </li>
+        <li class="ci">
+          <a class="ci__link" href={`tel:${c.phoneHref}`}>
+            {c.phone}
+          </a>
+        </li>
+      </ul>
+    </noscript>
+  </div>
+  <p class="toast" role="status" aria-live="polite" data-toast></p>
+  <footer class="footer">
+    <span>
+      © {year} {site.name}
+    </span>
+    <span aria-hidden="true">·</span>
+    <a href={pagePath(locale, 'privacy')}>{t(locale, 'privacy')}</a>
+  </footer>
+</section>
+
+<style>
+  .contact {
+    position: relative;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    background: var(--white);
+    color: var(--black);
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+      env(safe-area-inset-left);
+  }
+  .contact__center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1.5rem, 5vh, 3rem);
+    padding: 4rem 1.5rem 2rem;
+  }
+  .contact__h2 {
+    font: inherit;
+  }
+
+  /* "Talk to me": a real button that looks like text. */
+  .talk {
+    display: block;
+    font-size: clamp(2rem, 1.2rem + 4vw, 5rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    padding: 0.15em 0.1em;
+    transform-origin: 50% 50%;
+    transition: transform 0.5s cubic-bezier(0.34, 1.45, 0.64, 1);
+  }
+  .talk__breathe {
+    display: inline-block;
+    animation: talk-breathe var(--logo-breathe-ms) ease-in-out infinite;
+  }
+  @keyframes talk-breathe {
+    50% {
+      transform: scale(var(--talk-breathe));
+    }
+  }
+  .talk__text {
+    position: relative;
+    display: inline-block;
+  }
+  .talk__text::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.02em;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform var(--talk-underline-ms) var(--ease);
+  }
+  @media (hover: hover) {
+    .talk:hover .talk__text::after {
+      transform: scaleX(1);
+    }
+  }
+  :global(html.js) .contact.is-open .talk {
+    transform: translateY(var(--talk-lift)) scale(var(--talk-scale));
+  }
+  /* the list sits where the phrase was; the phrase floats up above it */
+  :global(html.js) .contact.is-open .contact__list {
+    margin-top: calc(var(--talk-lift) * 0.9);
+  }
+
+  .contact__list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  @media (min-width: 640px) {
+    .contact__list {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      column-gap: var(--talk-gap);
+      row-gap: 0.25rem;
+    }
+  }
+  :global(html.no-js) .contact__list:not(.contact__list--plain) {
+    display: none;
+  }
+  :global(html.js) .contact:not(.is-open) .contact__list {
+    visibility: hidden;
+    pointer-events: none;
+  }
+  :global(html.js) .contact .contact__list {
+    transition: margin-top 0.5s cubic-bezier(0.34, 1.45, 0.64, 1);
+  }
+  .contact__list :global(.ci) {
+    transition:
+      opacity var(--talk-item-ms) var(--ease),
+      transform var(--talk-item-ms) var(--ease);
+  }
+  :global(html.js) .contact:not(.is-open) .contact__list :global(.ci) {
+    opacity: 0;
+    transform: translateY(var(--talk-item-y));
+    transition-duration: 0.2s;
+    transition-delay: 0s !important;
+  }
+  .contact__list :global(.ci__link) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.5rem 0.25rem;
+    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    font-weight: 300;
+    text-decoration: none;
+    white-space: nowrap;
+    -webkit-touch-callout: none;
+  }
+  .contact__list :global(.icon) {
+    flex: none;
+    transition: transform 0.25s var(--ease);
+  }
+  .contact__list :global(.ci__text) {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size var(--talk-underline-ms) var(--ease);
+    padding-bottom: 1px;
+  }
+  @media (hover: hover) {
+    .contact__list :global(.ci__link:hover .ci__text) {
+      background-size: 100% 1px;
+    }
+    .contact__list :global(.ci__link:hover .icon) {
+      transform: translateY(-2px);
+    }
+  }
+  .contact__list :global(.ci__link:focus-visible .ci__text) {
+    background-size: 100% 1px;
+  }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(4.5rem + env(safe-area-inset-bottom));
+    z-index: 60;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    background: var(--black);
+    color: var(--white);
+    opacity: 0;
+    transform: translate(-50%, 6px);
+    transition:
+      opacity 0.2s var(--ease),
+      transform 0.2s var(--ease);
+    pointer-events: none;
+  }
+  .toast:empty {
+    padding: 0;
+  }
+  :global(.toast.is-shown) {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  .footer {
+    display: flex;
+    justify-content: center;
+    gap: 0.5em;
+    padding: 1.5rem 1rem calc(1.25rem + env(safe-area-inset-bottom));
+    font-size: 0.75rem;
+    color: var(--ink-70);
+    letter-spacing: 0.02em;
+  }
+  .footer a {
+    text-decoration: none;
+    display: inline-block;
+    padding: 0.9rem 0.25rem;
+    margin: -0.9rem 0;
+  }
+  .footer a:hover,
+  .footer a:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .talk__breathe {
+      animation: none;
+    }
+    :global(html.js) .contact.is-open .talk {
+      transform: scale(var(--talk-scale));
+    }
+    :global(html.js) .contact.is-open .contact__list {
+      margin-top: 0;
+    }
+  }
+</style>
+
+<script>
+  import { initContact } from '../lib/contact';
+  initContact();
+</script>
