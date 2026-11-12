@@ -186,6 +186,7 @@ Not done yet, on purpose. When you want it online:
 
 ## 7. For developers
 
+- **Design document:** the original spec this site was built from is kept in [`docs/papafiogosPD.md`](docs/papafiogosPD.md) (v1.2, 2026-11-12). Section numbers like §5.8 or §9.3 in the code and tests refer to it.
 - **Stack:** Astro 7 (static), TypeScript strict, hand-written CSS, ~5 KB of vanilla JS (gzipped). No UI libraries.
 - **Where things are:** `src/config/site.ts` (all tunables), `src/i18n/` (strings, URL helpers), `src/components/` (Hero, EvasiveLogo, Timeline*, Lightbox, Contact*, Seo, LangSwitch), `src/lib/` (spring, logo behaviour, timeline validation, lightbox, contact).
 - **Timeline loading:** `src/content.config.ts` uses a small custom content loader instead of Astro's `file()` loader, because `file()` only *logs* JSON errors and carries on (a typo would silently publish an empty timeline). Validation and the bilingual messages are in `src/lib/timeline-validate.ts`.
