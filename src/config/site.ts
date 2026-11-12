@@ -9,6 +9,13 @@ export const site = {
   name: 'PAPAFIOGOS',
   url: 'https://papafiogos.gr',
   slogan: 'I shoot. You smile.', // same on el + en, never translated
+  /**
+   * Show the owner's own handwriting for the slogan (traced from a photo by
+   * scripts/build-slogan.mjs). false = typed in the site font instead.
+   */
+  sloganHandwritten: true,
+  /** Width of the handwritten slogan (height follows). */
+  sloganHandwrittenWidth: 'clamp(220px, 22vw + 140px, 600px)',
   /** Search / link-preview description (approved by the owner 2026-11-12). */
   description: {
     el: 'Παπαφιόγκος: φωτογραφία, βίντεο και περιεχόμενο που σε κάνει να χαμογελάς. Από την Πάτρα. Μίλα μου.',

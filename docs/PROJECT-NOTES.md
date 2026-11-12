@@ -41,6 +41,8 @@
 | 2026-11-12 | **Meta descriptions approved** (PRD drafts minus "since 2009"): el "Παπαφιόγκος: φωτογραφία, βίντεο και περιεχόμενο που σε κάνει να χαμογελάς. Από την Πάτρα. Μίλα μου." / en "PAPAFIOGOS: photography, video and content that makes you smile. Based in Patras, Greece. Let's talk." |
 | 2026-11-12 | **Privacy page written.** Controller: **Αριστείδης Κάντας (PAPAFIOGOS), Πάτρα**. English spelling used: **Aristeidis Kantas** — *not yet confirmed by the owner*. Email is filled in from `site.ts`. Analytics sentence appears only once `analyticsToken` is set. |
 | 2026-11-12 | Original PRD copied into `docs/` for reference. |
+| 2026-11-12 | **Timeline filled with the owner's 8 moments** (2009, 2011, 2014, 2017, 2018, 2020, 2023, 2026), Greek = owner's own wording, English = owner's text with agreed fixes ("shit" removed, YouTube/TikTok/rap/Block Fitness Gym etc.). Text only — photos to follow. |
+| 2026-11-12 | **Handwritten slogan** (owner's request): photo `Desktop\ishootyousmile_handwritten.jpg` → traced SVG by `scripts/build-slogan.mjs` (copy of the photo in `scripts/vendor/`). Shown instead of the typed slogan; switch with `site.ts` → `sloganHandwritten` (false = typed). Real text kept hidden for screen readers / Google. ~5 KB gzipped. Owner to judge size/weight on a real phone (`sloganHandwrittenWidth`, stroke in EvasiveLogo.astro `.slogan__hand`). |
 
 ## 5. Deliberate deviations from the PRD (also in README §7)
 
@@ -54,17 +56,19 @@
 
 ## 6. Open items / waiting on the owner
 
-- [ ] **Timeline content** — owner is preparing the initial moments and will share them (in progress, started 2026-11-12).
+- [x] Timeline texts — 8 moments added 2026-11-12.
+- [ ] **Timeline images** — owner will share (one folder; year in file name + one-line description each).
+- [ ] 2009 start bookend duplicates the first moment's "2009" — owner hasn't decided (recommendation: remove the start bookend, keep Σήμερα/Today).
+- [ ] Owner to review the handwritten slogan on a real phone (size/weight).
 - [ ] Timeline **heading**: keep "Η ΙΣΤΟΡΙΑ / THE STORY", change, or hide (`site.ts` → `timeline.showHeading`).
 - [ ] Timeline **order**: oldest-first (current) or newest-first (`site.ts` → `timeline.order`).
 - [ ] Confirm English spelling of the name on the privacy page (currently "Aristeidis Kantas").
 - [ ] Try the logo's tap hints on a real phone and tune (`site.ts` → `logo.breathe / ripple / nudge`). Offer: LAN-only phone preview.
 - [ ] Later (launch): Cloudflare Web Analytics token, GitHub private repo, Cloudflare Pages, domain, Zoho `info@papafiogos.gr`, then switch `contact.email`.
 
-## 6b. Timeline draft (owner's texts, received 2026-11-12, NOT yet in timeline.json)
+## 6b. Timeline draft (owner's original texts, received 2026-11-12)
 
-Status: English texts from the owner (verbatim below). Waiting for: owner's answers on the review
-suggestions (typos, the two "shit"s), Greek versions (drafts proposed), and the images.
+Status: **now in timeline.json** (final wording there; table below = the owner's first draft, kept for reference). Still waiting for: the **images**.
 
 | Date | Title | Text (owner, verbatim) |
 |---|---|---|
@@ -112,5 +116,6 @@ npx astro preview stop # if a preview server is left running
 - Fixes found during testing: logo now clears the slogan; contact row wraps on 640–670 px wide screens; hero has no min-height (280 px tall foldables); dodge cooldown no longer swallows the first activation; unused media pruned from output; friendlier trailing-comma message.
 - Added `docs/papafiogosPD.md`.
 - Meta descriptions approved; privacy wording written (controller Αριστείδης Κάντας, Πάτρα).
-- Owner sent the 8 timeline texts (English) → recorded in §6b, reviewed, Greek drafts proposed. Images to follow.
+- Owner sent the 8 timeline texts (English) → recorded in §6b, reviewed, Greek drafts proposed; owner revised the Greek → all 8 moments added to timeline.json (text only). No-JS test made content-agnostic.
+- Handwritten slogan: traced owner's photo to SVG, replaced the typed slogan (config switch), fixed slogan centring (was offset right whenever wider than the logo box).
 - Owner will now prepare the **initial timeline** and share the info → next session: add the moments, build, test, show screenshots, commit.

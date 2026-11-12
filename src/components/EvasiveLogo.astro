@@ -1,5 +1,6 @@
 ---
 import logo from '../assets/brand/logo-paths.json';
+import hand from '../assets/brand/slogan-handwritten.json';
 import { site, type Locale } from '../config/site';
 import { t } from '../i18n/utils';
 
@@ -12,7 +13,23 @@ const config = JSON.stringify({ ...site.logo });
 
 <div class="logo" data-evasive-logo data-config={config}>
   <p id="slogan" class="slogan" lang="en" data-slogan aria-hidden="true">
-    <span data-slogan-text>{site.slogan}</span>
+    {site.sloganHandwritten ? (
+      <span data-slogan-text class="slogan__hand-wrap">
+        <svg
+          class="slogan__hand"
+          viewBox={hand.viewBox}
+          width={hand.width}
+          height={hand.height}
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path fill-rule="evenodd" d={hand.d} />
+        </svg>
+        <span class="visually-hidden">{site.slogan}</span>
+      </span>
+    ) : (
+      <span data-slogan-text>{site.slogan}</span>
+    )}
   </p>
   <h1 class="logo__h1">
     <button
@@ -186,7 +203,11 @@ const config = JSON.stringify({ ...site.logo });
   /* Slogan: sits exactly at the logo's home centre, hidden until the logo moves away. */
   .slogan {
     position: absolute;
-    inset: 0;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: max-content;
+    translate: -50% 0; /* centred on the logo's home even when wider than it */
     display: grid;
     place-items: center;
     text-align: center;
@@ -203,6 +224,22 @@ const config = JSON.stringify({ ...site.logo });
       transform var(--slogan-out) var(--ease);
     pointer-events: none;
     user-select: none;
+  }
+  .slogan__hand-wrap {
+    display: block;
+    line-height: 0;
+  }
+  .slogan__hand {
+    width: var(--slogan-hand-w);
+    max-width: calc(100vw - 2rem);
+    height: auto;
+    fill: var(--black);
+    /* a hair of extra weight that stays the same at every size, so thin pen
+       strokes never get too faint on small phones */
+    stroke: var(--black);
+    stroke-width: 0.35px;
+    vector-effect: non-scaling-stroke;
+    paint-order: stroke;
   }
   :global(.is-away) .slogan {
     opacity: 1;
