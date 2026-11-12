@@ -128,7 +128,14 @@ test.describe('no JavaScript', () => {
     await page.goto('/');
     await expect(page.locator('h1 svg title')).toHaveText('PAPAFIOGOS');
     await expect(page.locator('[data-timeline]')).toBeVisible();
-    await expect(page.getByText('Η ιστορία γράφεται.')).toBeVisible();
+    // either the empty state or the moments must be readable without JS
+    const entries = page.locator('[data-timeline] .entry');
+    if ((await entries.count()) === 0)
+      await expect(page.getByText('Η ιστορία γράφεται.')).toBeVisible();
+    else {
+      await expect(entries.first().locator('.entry__title')).toBeVisible();
+      await expect(entries.last().locator('.entry__text')).toBeVisible();
+    }
     const plain = page.locator('.contact__list--plain a');
     await expect(plain).toHaveCount(3);
     await expect(plain.nth(1)).toHaveAttribute('href', 'mailto:papafiogos@gmail.com');
