@@ -186,6 +186,7 @@ Not done yet, on purpose. When you want it online:
 
 ## 7. For developers
 
+- **Project notes / status:** [`docs/PROJECT-NOTES.md`](docs/PROJECT-NOTES.md) — decisions, open items and a session log. Read it first when resuming.
 - **Design document:** the original spec this site was built from is kept in [`docs/papafiogosPD.md`](docs/papafiogosPD.md) (v1.2, 2026-11-12). Section numbers like §5.8 or §9.3 in the code and tests refer to it.
 - **Stack:** Astro 7 (static), TypeScript strict, hand-written CSS, ~5 KB of vanilla JS (gzipped). No UI libraries.
 - **Where things are:** `src/config/site.ts` (all tunables), `src/i18n/` (strings, URL helpers), `src/components/` (Hero, EvasiveLogo, Timeline*, Lightbox, Contact*, Seo, LangSwitch), `src/lib/` (spring, logo behaviour, timeline validation, lightbox, contact).
