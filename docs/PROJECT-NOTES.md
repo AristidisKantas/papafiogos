@@ -61,6 +61,26 @@
 - [ ] Try the logo's tap hints on a real phone and tune (`site.ts` → `logo.breathe / ripple / nudge`). Offer: LAN-only phone preview.
 - [ ] Later (launch): Cloudflare Web Analytics token, GitHub private repo, Cloudflare Pages, domain, Zoho `info@papafiogos.gr`, then switch `contact.email`.
 
+## 6b. Timeline draft (owner's texts, received 2026-11-12, NOT yet in timeline.json)
+
+Status: English texts from the owner (verbatim below). Waiting for: owner's answers on the review
+suggestions (typos, the two "shit"s), Greek versions (drafts proposed), and the images.
+
+| Date | Title | Text (owner, verbatim) |
+|---|---|---|
+| 2009 | First camera. | The moment I realised that moments are forever if you are able to trap them on your lens. |
+| 2011 | First movies with the boys. | We did a lot of shit together. I was the one that had everything filmed. Especially skating. This could lead only to one thing. Video editing. Dad's laptop had Pinnacle Studio 9 installed. Say. No. More. |
+| 2014 | Instagram. | Insta was something else back then. Photography was indeed appreciated. Brands liked good photos. I liked to shoot good photos. Growth and recognition came. Multiple brand collaborations took place. |
+| 2017 | Video Clips. | Loved this. I directed and shot several video clips mostly on the RAP scene of Patras. Ask Gang Run ;) If you know you know. More experience came with it. |
+| 2018 | Papafiogos TV. | My Youtube channel. A place which may be lost in time now but has a lot of good moments. An era of experimenting with vlogging, sound quality and other forms of video. Needed more time. Might revisit. |
+| 2020 | The break. | Never really stopped. Life just got in the way. Kept most of my videos offline for internal consumption. |
+| 2023 | The rebirth. | Could not resist anymore. Short form videos became a thing and I loved it. Started posting again on Tiktok trying to learn the patterns. Shit looked good. |
+| 2026 | Consistency. | Never had a strict schedule other than the fact that I kept posting. More videos. More content. Better edits. Better hooks. Worked for Hellas Green. Worked for Block Fittness Gym. Worked for other brands as well. Social Media accounts that completely change shape once I step in. Do not hesitate. Talk to me. |
+
+Review points raised with the owner: spelling (YouTube, TikTok, "Block Fitness Gym"?, rap, Social media,
+Short-form, "If you know, you know."), "trap them in your lens", two uses of "shit" (owner's call),
+Greek versions needed (Greek is the default site), the 2009 start bookend duplicates the 2009 moment.
+
 ## 7. How to add a timeline moment (quick reference)
 
 1. Copy the photo/video into `src/content/timeline/media/` (clear file name, no spaces).
@@ -92,4 +112,5 @@ npx astro preview stop # if a preview server is left running
 - Fixes found during testing: logo now clears the slogan; contact row wraps on 640–670 px wide screens; hero has no min-height (280 px tall foldables); dodge cooldown no longer swallows the first activation; unused media pruned from output; friendlier trailing-comma message.
 - Added `docs/papafiogosPD.md`.
 - Meta descriptions approved; privacy wording written (controller Αριστείδης Κάντας, Πάτρα).
+- Owner sent the 8 timeline texts (English) → recorded in §6b, reviewed, Greek drafts proposed. Images to follow.
 - Owner will now prepare the **initial timeline** and share the info → next session: add the moments, build, test, show screenshots, commit.
