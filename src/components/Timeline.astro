@@ -20,10 +20,15 @@ if (site.timeline.order === 'newest-first') moments.reverse();
 const firstWithMedia = moments.findIndex((m) => m.media.length > 0);
 const empty = moments.length === 0;
 const showBookends = site.timeline.bookends;
-const [startLabel, endLabel] =
-  site.timeline.order === 'newest-first'
-    ? [t(locale, 'today'), String(site.timeline.startYear)]
-    : [String(site.timeline.startYear), t(locale, 'today')];
+const yearLabel = String(site.timeline.startYear);
+// Hide the "2009" bookend when a moment already shows that year (it would just repeat it).
+const showYear = empty || !moments.some((m) => m.date.startsWith(yearLabel));
+const newestFirst = site.timeline.order === 'newest-first';
+const [startLabel, endLabel] = newestFirst
+  ? [t(locale, 'today'), yearLabel]
+  : [yearLabel, t(locale, 'today')];
+const showStart = showBookends && (newestFirst || showYear);
+const showEnd = showBookends && (!newestFirst || showYear);
 const headingId = 'timeline-heading';
 ---
 
@@ -46,7 +51,7 @@ const headingId = 'timeline-heading';
       <span class="timeline__fill" data-fill></span>
     </div>
 
-    {showBookends && (
+    {showStart && (
       <p class="bookend bookend--start" data-reveal>
         <span class="entry__dot" aria-hidden="true" />
         <span class="bookend__label">{startLabel}</span>
@@ -70,7 +75,7 @@ const headingId = 'timeline-heading';
       </ol>
     )}
 
-    {showBookends && (
+    {showEnd && (
       <p class="bookend bookend--end" data-reveal>
         <span class="entry__dot" aria-hidden="true" />
         <span class="bookend__label">{endLabel}</span>

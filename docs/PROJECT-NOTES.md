@@ -60,7 +60,7 @@
 - [x] Timeline texts — 8 moments added 2026-11-12.
 - [x] Timeline images — added 2026-11-13 as B&W Polaroids.
 - [ ] Owner to review the photo **alt texts** (in timeline.json) and the crops/tilt.
-- [ ] 2009 start bookend duplicates the first moment's "2009" — owner hasn't decided (recommendation: remove the start bookend, keep Σήμερα/Today).
+- [x] 2009 start bookend removed (2026-11-13, owner): now hidden automatically whenever a moment already shows the start year; still shown on the empty-timeline screen. Σήμερα/Today kept.
 - [ ] Owner to review the handwritten slogan on a real phone (size/weight).
 - [ ] Timeline **heading**: keep "Η ΙΣΤΟΡΙΑ / THE STORY", change, or hide (`site.ts` → `timeline.showHeading`).
 - [ ] Timeline **order**: oldest-first (current) or newest-first (`site.ts` → `timeline.order`).
@@ -126,3 +126,5 @@ npx astro preview stop # if a preview server is left running
 - Owner sent `forsite.zip` (13 photos). Built `scripts/build-polaroids.mjs` (collage → B&W → Polaroid), attached one print per year with el/en alt texts, slight tilt in CSS. Grain lowered (0.045 → 0.03) to keep AVIF sizes down (~70 KB on a phone per print).
 - Checks: astro check 0 errors, ESLint clean, 76/76 Playwright pass.
 - To redo a photo: put the new original in `photos-originals/` (name starts with the year), run `node scripts/build-polaroids.mjs`, adjust `FOCUS` if a crop is off.
+- Owner reported "logo fades behind the slogan instead of dodging": not a bug — Windows *Animation effects* is off on the owner's PC (MinAnimate=0) → browser reports prefers-reduced-motion → the designed crossfade. Owner agreed; no change.
+- Removed the duplicate "2009" start bookend (Timeline.astro: auto-hidden when a moment has the start year). 76/76 tests pass.
