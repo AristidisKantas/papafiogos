@@ -5,6 +5,10 @@
 export const strings = {
   el: {
     slogan: 'I shoot. You smile.', // stays in English on purpose
+    // Browser tab + Google result title of the home page
+    homeTitle: 'Παπαφιόγκος — Φωτογραφία & βίντεο στην Πάτρα | I shoot. You smile.',
+    // Invisible text inside the main heading (the logo), read by Google
+    heroHeading: 'Παπαφιόγκος — φωτογραφία και βίντεο, Πάτρα',
     timelineHeading: 'Η ιστορία', // shown uppercase: Η ΙΣΤΟΡΙΑ
     talkToMe: 'Μίλα μου',
     workedWith: 'Έχω συνεργαστεί με', // shown small, uppercase, above Μίλα μου
@@ -42,6 +46,8 @@ export const strings = {
   },
   en: {
     slogan: 'I shoot. You smile.',
+    homeTitle: 'PAPAFIOGOS — Photography & video in Patras | I shoot. You smile.',
+    heroHeading: 'PAPAFIOGOS — photography and video, Patras, Greece',
     timelineHeading: 'The story',
     talkToMe: 'Talk to me',
     workedWith: 'Worked with',

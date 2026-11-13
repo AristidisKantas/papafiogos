@@ -1,6 +1,6 @@
 ---
 import { site, type Locale } from '../config/site';
-import { absolute, pagePath } from '../i18n/utils';
+import { absolute, pagePath, t } from '../i18n/utils';
 
 interface Props {
   locale: Locale;
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { locale, page, title, jsonLd = [] } = Astro.props;
-const fullTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.slogan}`;
+const fullTitle = title ? `${title} — ${site.name}` : t(locale, 'homeTitle');
 const description = site.description[locale];
 const isRealPage = page !== '404';
 const canonical = isRealPage ? absolute(pagePath(locale, page)) : undefined;

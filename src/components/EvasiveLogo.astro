@@ -39,6 +39,8 @@ const config = JSON.stringify({ ...site.logo });
       aria-label={t(locale, 'logoLabel')}
       data-logo-button
     >
+      {/* For Google: the heading's words (the logo is a drawing). Screen readers use aria-label. */}
+      <span class="visually-hidden">{t(locale, 'heroHeading')}</span>
       <span class="logo__mover" data-logo-mover>
         <span class="logo__nudge">
           <span class="logo__ripple" aria-hidden="true"></span>

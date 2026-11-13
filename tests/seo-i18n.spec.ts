@@ -3,7 +3,9 @@ import { test, expect } from '@playwright/test';
 test('Greek home: lang, title, canonical, hreflang, OG', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('lang', 'el');
-  await expect(page).toHaveTitle('PAPAFIOGOS — I shoot. You smile.');
+  await expect(page).toHaveTitle(
+    'Παπαφιόγκος — Φωτογραφία & βίντεο στην Πάτρα | I shoot. You smile.',
+  );
   await expect(page.locator('link[rel=canonical]')).toHaveAttribute(
     'href',
     'https://papafiogos.gr/',
@@ -29,6 +31,11 @@ test('Greek home: lang, title, canonical, hreflang, OG', async ({ page }) => {
 test('English home has its own canonical and strings', async ({ page }) => {
   await page.goto('/en/');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page).toHaveTitle(
+    'PAPAFIOGOS — Photography & video in Patras | I shoot. You smile.',
+  );
+  // the logo heading carries real words for search engines
+  await expect(page.locator('h1')).toContainText('photography and video, Patras');
   await expect(page.locator('link[rel=canonical]')).toHaveAttribute(
     'href',
     'https://papafiogos.gr/en/',
