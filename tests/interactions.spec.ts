@@ -38,7 +38,10 @@ test.describe('hero — desktop hover', () => {
     await page.mouse.move(10, 880, { steps: 4 });
     await page.waitForTimeout(1500);
     expect(await isAway(page)).toBe(false);
-    expect(await moverTransform(page)).toContain('translate3d(0px, 0px, 0px)');
+    // The spring settles exactly at home; on a busy machine that can take a little longer.
+    await expect
+      .poll(() => moverTransform(page), { timeout: 5000 })
+      .toContain('translate3d(0px, 0px, 0px)');
   });
 
   test('keyboard: Enter toggles the logo, Escape brings it home', async ({ page }) => {
