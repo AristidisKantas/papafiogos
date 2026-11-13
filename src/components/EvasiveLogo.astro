@@ -39,8 +39,6 @@ const config = JSON.stringify({ ...site.logo });
       aria-label={t(locale, 'logoLabel')}
       data-logo-button
     >
-      {/* For Google: the heading's words (the logo is a drawing). Screen readers use aria-label. */}
-      <span class="visually-hidden">{t(locale, 'heroHeading')}</span>
       <span class="logo__mover" data-logo-mover>
         <span class="logo__nudge">
           <span class="logo__ripple" aria-hidden="true"></span>
@@ -71,6 +69,9 @@ const config = JSON.stringify({ ...site.logo });
         </span>
       </span>
     </button>
+    {/* For Google: the heading's words (the logo is a drawing). Kept OUTSIDE the button: inside it,
+        iOS Safari counted this text when sizing the logo box and pushed the logo to the left. */}
+    <span class="visually-hidden">{t(locale, 'heroHeading')}</span>
   </h1>
 </div>
 
@@ -90,6 +91,8 @@ const config = JSON.stringify({ ...site.logo });
     display: block;
     height: var(--logo-h);
     aspect-ratio: 511 / 701;
+    /* centre inside the heading even if a browser makes the heading wider than the logo */
+    margin-inline: auto;
     touch-action: manipulation;
     user-select: none;
     -webkit-user-select: none;

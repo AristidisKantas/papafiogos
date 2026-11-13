@@ -74,6 +74,10 @@ for (const path of ['/', '/en/']) {
       expect(m.logo.top).toBeGreaterThanOrEqual(0);
       expect(m.logo.right).toBeLessThanOrEqual(m.vw);
       expect(m.logo.bottom).toBeLessThanOrEqual(m.vh);
+      // logo centred in the hero (iOS Safari once pushed it to the left edge)
+      const logoMid = m.logo.left + m.logo.width / 2;
+      const heroMid = m.hero.left + m.hero.width / 2;
+      expect(Math.abs(logoMid - heroMid)).toBeLessThanOrEqual(1);
       // wordmark ≥ ~18 px tall: ΦΙΟΓΚΟΣ line is ~87/701 of the mark height
       expect((m.logo.height * 87) / 701).toBeGreaterThanOrEqual(17.5);
       // nothing sideways

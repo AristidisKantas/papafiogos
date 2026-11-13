@@ -145,3 +145,27 @@ test.describe('no JavaScript', () => {
     await expect(plain.nth(2)).toBeVisible();
   });
 });
+
+test('logo stays centred even if the browser makes its box full width (iOS Safari 27)', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 440, height: 763 });
+  await page.goto('/');
+  // Reproduce what an iPhone reported: the logo box and the heading stretched to the full width.
+  // (set through the CSSOM: the site's CSP blocks injected <style> tags, by design)
+  await page.evaluate(() => {
+    for (const el of document.querySelectorAll<HTMLElement>('[data-evasive-logo], .logo__h1'))
+      el.style.setProperty('width', '100%', 'important');
+  });
+  const m = await page.evaluate(() => {
+    const box = document.querySelector('[data-evasive-logo]')!.getBoundingClientRect();
+    const btn = document.querySelector('[data-logo-button]')!.getBoundingClientRect();
+    return {
+      boxW: box.width,
+      mid: btn.left + btn.width / 2,
+      vw: document.documentElement.clientWidth,
+    };
+  });
+  expect(m.boxW).toBeGreaterThan(400); // the bug condition is really in place
+  expect(Math.abs(m.mid - m.vw / 2)).toBeLessThanOrEqual(1);
+});
