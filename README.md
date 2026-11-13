@@ -3,6 +3,9 @@
 The personal site of PAPAFIOGOS. Three screens: the logo, the story (timeline), and "Μίλα μου / Talk to me".
 Greek at `/`, English at `/en/`.
 
+> 📘 **The complete guide** (run locally, test on a phone, photos, handwriting, settings,
+> troubleshooting): [`docs/GUIDE.md`](docs/GUIDE.md).
+
 > **Status:** built and tested **locally only**. Nothing has been pushed to GitHub or deployed.
 > Going live (GitHub + Cloudflare Pages + domain) is a separate, later step — see [Going live](#going-live-later).
 
@@ -22,10 +25,13 @@ Other commands:
 | Command | What it does |
 |---|---|
 | `npm run dev` | Live preview while you edit. |
+| `npm run dev:phone` | Same, and your phone on the same Wi-Fi can open it (see the guide §4). Stop with Ctrl+C when done. |
 | `npm run dev:example` | Same, but shows **example moments** from `timeline.example.json` so you can see a full timeline. Never used for the real site. |
 | `npm run build` | Checks everything and builds the finished site into `dist/`. |
 | `npm run preview` | Serves the finished `dist/` site at http://localhost:4321. |
-| `npm test` | Runs the automatic tests (every screen size, the logo, contact, languages, SEO). |
+| `npm test` | Runs the 76 automatic tests (every screen size, the logo, contact, languages, SEO). |
+| `npm run polaroids` | Rebuilds the black & white Polaroid prints from `photos-originals/` (guide §7). |
+| `npm run handwriting` | Re-traces your handwriting from the photos in `scripts/vendor/` (guide §8). |
 
 ---
 
@@ -40,7 +46,11 @@ src/content/timeline/
 └── media/                 ← put photos and videos here
 ```
 
-Right now `timeline.json` is empty — `[]` — and the site shows the calm “Η ιστορία γράφεται. / The story is being written.” screen between **2009** and **Σήμερα / Today**.
+Right now it holds **8 moments (2009 → 2026)**, each with a black & white Polaroid print. With an empty file (`[]`) the site shows the calm “Η ιστορία γράφεται. / The story is being written.” screen between **2009** and **Σήμερα / Today**.
+
+> **Photos for the timeline go through the Polaroid script first** (collage → black & white → Polaroid
+> frame): put originals in `photos-originals/` named by year, run `npm run polaroids`, then use
+> `"photo": "<year>-polaroid.jpg"`. See [the guide §7](docs/GUIDE.md#7-timeline-photos-the-polaroid-prints).
 
 ### Add a moment
 
@@ -149,7 +159,7 @@ A failed build never replaces a live site — the last good version stays online
 
 ## 4. Photo and video tips
 
-- **Photos:** upload the original JPEGs. The site makes small, modern versions (AVIF/WebP) for each screen automatically.
+- **Photos:** the timeline uses Polaroid prints made by `npm run polaroids` from your originals (guide §7). The site then makes small, modern versions (AVIF/WebP) for each screen automatically.
 - **Short videos** (they autoplay silently, looping, only while visible): **MP4 (H.264), ≤ 20 seconds, ≤ 4 MB**, plus a still image as `poster`.
   - HandBrake: preset **"Web → Social 25 MB 30 Seconds 720p30"**, then *Video* tab → *Constant Quality* RF 28, *Audio* tab → remove the track if it doesn't matter. Trim to ≤ 20 s.
   - Or with ffmpeg: `ffmpeg -i in.mov -t 20 -vf scale=-2:720 -c:v libx264 -crf 28 -preset slow -movflags +faststart -an out.mp4`
@@ -163,7 +173,8 @@ A failed build never replaces a live site — the last good version stays online
 - [ ] **Timeline heading**: keep "Η ΙΣΤΟΡΙΑ / THE STORY", change it (`strings.ts`), or hide it (`site.ts` → `timeline.showHeading: false`).
 - [ ] **Timeline order**: oldest-first (current) or newest-first (`site.ts` → `timeline.order`).
 - [x] **Privacy text** — written 2026-11-12 (`strings.ts` → `privacyBody`; the email comes from `site.ts` automatically, the analytics sentence appears only once analytics is switched on). Update the date in `privacyUpdated` whenever you change it.
-- [ ] **Timeline moments** — whenever you're ready.
+- [x] **Timeline moments** — 8 moments with Polaroid photos (2026-11-13).
+- [ ] **Photo descriptions (`alt`)** in `timeline.json` — written from the photos, please review.
 - [ ] **Hinting cues on the logo** — try them on your real phone and tune `site.ts` → `logo.breathe`, `logo.ripple`, `logo.nudge`.
 - [ ] **Cloudflare Web Analytics token** (`site.ts` → `analyticsToken`) — at launch.
 - [ ] Later: switch `contact.email` to `info@papafiogos.gr`.
@@ -186,6 +197,7 @@ Not done yet, on purpose. When you want it online:
 
 ## 7. For developers
 
+- **Complete guide:** [`docs/GUIDE.md`](docs/GUIDE.md).
 - **Project notes / status:** [`docs/PROJECT-NOTES.md`](docs/PROJECT-NOTES.md) — decisions, open items and a session log. Read it first when resuming.
 - **Design document:** the original spec this site was built from is kept in [`docs/papafiogosPD.md`](docs/papafiogosPD.md) (v1.2, 2026-11-12). Section numbers like §5.8 or §9.3 in the code and tests refer to it.
 - **Stack:** Astro 7 (static), TypeScript strict, hand-written CSS, ~5 KB of vanilla JS (gzipped). No UI libraries.
@@ -193,7 +205,7 @@ Not done yet, on purpose. When you want it online:
 - **Timeline loading:** `src/content.config.ts` uses a small custom content loader instead of Astro's `file()` loader, because `file()` only *logs* JSON errors and carries on (a typo would silently publish an empty timeline). Validation and the bilingual messages are in `src/lib/timeline-validate.ts`.
 - **Unused media** is removed from the output by `integrations/prune-media.mjs`.
 - **Brand assets:** `npm run brand` regenerates the polished logo (split into `#face`, `#bowtie`, `#wordmark`), favicons, apple-touch-icon and OG image from `scripts/vendor/`. `python scripts/build-font.py` rebuilds the single Inter Latin+Greek font file (needs `pip install fonttools brotli`).
-- **Quality checks:** `npm run check`, `npm run lint`, `npm test` (75 Playwright tests incl. the full §9.3 viewport matrix in both languages).
+- **Quality checks:** `npm run check`, `npm run lint`, `npm test` (76 Playwright tests incl. the full §9.3 viewport matrix in both languages).
 
 ### Deliberate deviations from the design document
 

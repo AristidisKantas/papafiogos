@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "dev:example": "cross-env TIMELINE_EXAMPLE=1 astro dev",
+    "dev:phone": "astro dev --host",
     "build": "astro check && astro build",
     "build:fast": "astro build",
     "preview": "astro preview",
@@ -13,7 +14,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "playwright test",
-    "brand": "node scripts/build-brand.mjs"
+    "brand": "node scripts/build-brand.mjs",
+    "polaroids": "node scripts/build-polaroids.mjs",
+    "handwriting": "node scripts/build-slogan.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

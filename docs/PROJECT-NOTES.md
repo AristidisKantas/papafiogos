@@ -13,6 +13,8 @@
 | Site source (local git repo, branch `main`) | `C:\Users\aristidisk\Documents\papafiogos-site` |
 | Original design document (PRD v1.2) | `docs/papafiogosPD.md` (copy of `Desktop\papafiogosPD.md`) |
 | These notes | `docs/PROJECT-NOTES.md` |
+| **Complete guide** (run locally, phone testing, photos, handwriting, settings, troubleshooting) | `docs/GUIDE.md` |
+| Full-size timeline photo originals (**not in git**, owner backs up) | `photos-originals/` |
 | Owner guide (how to add moments, change texts) | `README.md` |
 | All tunables + contact details | `src/config/site.ts` |
 | All interface texts (el + en), privacy wording | `src/i18n/strings.ts` |
@@ -130,3 +132,5 @@ npx astro preview stop # if a preview server is left running
 - Owner reported "logo fades behind the slogan instead of dodging": not a bug — Windows *Animation effects* is off on the owner's PC (MinAnimate=0) → browser reports prefers-reduced-motion → the designed crossfade. Owner agreed; no change.
 - Removed the duplicate "2009" start bookend (Timeline.astro: auto-hidden when a moment has the start year). 76/76 tests pass.
 - "Μίλα μου" / "Talk to me" replaced with the owner's handwriting (traced, both languages); width capped so 280–320 px phones don't scroll sideways. 76/76 tests pass.
+- Owner: "this is so beautiful". Wrote `docs/GUIDE.md` (complete guide: setup, run locally, phone testing in Chrome + real phone via `npm run dev:phone`, reduce-motion explanation, timeline, Polaroid pipeline, handwriting, settings, checks, git + what is/isn't in the repo, going live, troubleshooting, project map). README refreshed and linked to it. New npm scripts: `dev:phone`, `polaroids`, `handwriting`.
+- Repo check: all assets tracked (prints, traced handwriting, logo, font, favicons, handwriting photos, logo originals); only `photos-originals/` (61 MB) is left out on purpose, plus regenerated folders (node_modules, dist, .astro, test output).
