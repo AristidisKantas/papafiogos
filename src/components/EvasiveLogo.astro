@@ -283,7 +283,4 @@ const config = JSON.stringify({ ...site.logo });
 <script>
   import { initEvasiveLogo } from '../lib/evasive-logo';
   document.querySelectorAll<HTMLElement>('[data-evasive-logo]').forEach(initEvasiveLogo);
-  // Layout diagnostics for phones we can't test directly: open the site with ?debug
-  if (new URLSearchParams(location.search).has('debug'))
-    import('../lib/debug-panel').then((m) => m.showDebugPanel());
 </script>
