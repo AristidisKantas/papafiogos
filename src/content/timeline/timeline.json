@@ -1,66 +1,162 @@
 [
   {
     "date": "2009",
-    "title": { "el": "Η πρώτη κάμερα.", "en": "First camera." },
+    "title": {
+      "el": "Η πρώτη κάμερα.",
+      "en": "First camera."
+    },
     "text": {
       "el": "Η στιγμή που κατάλαβα ότι οι στιγμές μένουν για πάντα, αν καταφέρεις να τις παγιδέψεις στον φακό σου.",
       "en": "The moment I realised that moments are forever if you are able to trap them in your lens."
-    }
+    },
+    "media": [
+      {
+        "photo": "2009-polaroid.jpg",
+        "alt": {
+          "el": "Σέλφι στον καθρέφτη του μπάνιου με την πρώτη μου κάμερα.",
+          "en": "Mirror selfie in the bathroom with my first camera."
+        }
+      }
+    ]
   },
   {
     "date": "2011",
-    "title": { "el": "Τα πρώτα films με τα παιδιά.", "en": "First movies with the boys." },
+    "title": {
+      "el": "Τα πρώτα films με τα παιδιά.",
+      "en": "First movies with the boys."
+    },
     "text": {
       "el": "Οκ, συνέβαιναν πολλά. Εγώ ήμουν αυτός που είχε μία κάμερα πάντα στο χέρι. Όταν έπρεπε να γυρίσουμε το skate part του Νίκου για να τον χορηγήσει ένα local skate shop, δεν είχα άλλη επιλογή. Έπρεπε να μάθω μοντάζ. Το λάπτοπ του πατέρα μου είχε Pinnacle Studio 9. Ούτε. Λέξη. Παραπάνω.",
       "en": "We did a lot of crazy stuff together. I was the one that had everything filmed. Especially skating. This could lead only to one thing. Video editing. Dad's laptop had Pinnacle Studio 9 installed. Say. No. More."
-    }
+    },
+    "media": [
+      {
+        "photo": "2011-polaroid.jpg",
+        "alt": {
+          "el": "Σκέιτερ σε φιγούρα πάνω σε ράγα, φωτογραφημένος κόντρα στον ουρανό.",
+          "en": "A skater grinding a rail, silhouetted against the sky."
+        }
+      }
+    ]
   },
   {
     "date": "2014",
-    "title": { "el": "Instagram.", "en": "Instagram." },
+    "title": {
+      "el": "Instagram.",
+      "en": "Instagram."
+    },
     "text": {
       "el": "Το Insta τότε ήταν άλλο πράγμα. Η φωτογραφία έκανε τη διαφορά. Τα brands ήθελαν καλές φωτογραφίες. Εγώ τραβούσα καλές φωτογραφίες. Έγιναν πολλές συνεργασίες με brands.",
       "en": "Insta was something else back then. Photography was indeed appreciated. Brands liked good photos. I liked to shoot good photos. Growth and recognition came. Multiple brand collaborations took place."
-    }
+    },
+    "media": [
+      {
+        "photo": "2014-polaroid.jpg",
+        "alt": {
+          "el": "Κολάζ: δύο φίλοι τσουγκρίζουν ποτήρια που αχνίζουν, ρολόι χειρός στο νερό και στο αυτοκίνητο, πορτρέτο δίπλα στη θάλασσα.",
+          "en": "Collage: two friends toasting smoking glasses, a wristwatch by the water and in a car, a portrait by the sea."
+        }
+      }
+    ]
   },
   {
     "date": "2017",
-    "title": { "el": "Video clips.", "en": "Video clips." },
+    "title": {
+      "el": "Video clips.",
+      "en": "Video clips."
+    },
     "text": {
       "el": "Κάπου εδώ ερωτεύτηκα το montage. Σκηνοθέτησα και γύρισα αρκετά video clips, κυρίως για τη ραπ σκηνή της Πάτρας. Ρωτήστε τους Gang Run ;) If you know, you know.",
       "en": "Loved this. I directed and shot several video clips, mostly on the rap scene of Patras. Ask Gang Run ;) If you know, you know. More experience came with it."
-    }
+    },
+    "media": [
+      {
+        "photo": "2017-polaroid.jpg",
+        "alt": {
+          "el": "Κολάζ: στιγμιότυπα από τα γυρίσματα των video clips.",
+          "en": "Collage: stills from the video clip shoots."
+        }
+      }
+    ]
   },
   {
     "date": "2018",
-    "title": { "el": "Papafiogos TV.", "en": "Papafiogos TV." },
+    "title": {
+      "el": "Papafiogos TV.",
+      "en": "Papafiogos TV."
+    },
     "text": {
       "el": "Το κανάλι μου στο YouTube. Ίσως έχει χαθεί στον χρόνο, αλλά κρύβει πολλές καλές στιγμές. Μια εποχή πειραματισμού με vlogging, ήχο και άλλες μορφές βίντεο. Ήθελε περισσότερο χρόνο. Ίσως το ξαναπιάσω.",
       "en": "My YouTube channel. A place which may be lost in time now but has a lot of good moments. An era of experimenting with vlogging, sound quality and other forms of video. Needed more time. Might revisit."
-    }
+    },
+    "media": [
+      {
+        "photo": "2018-polaroid.jpg",
+        "alt": {
+          "el": "Κολάζ: στον χιονισμένο δρόμο του βουνού και ένα χαμογελαστό σέλφι με φίλους.",
+          "en": "Collage: on a snowy mountain road, and a smiling selfie with friends."
+        }
+      }
+    ]
   },
   {
     "date": "2020",
-    "title": { "el": "Το διάλειμμα.", "en": "The break." },
+    "title": {
+      "el": "Το διάλειμμα.",
+      "en": "The break."
+    },
     "text": {
       "el": "Δεν σταμάτησα ποτέ πραγματικά. Απλώς η ζωή μπήκε στη μέση. Τα περισσότερα βίντεο τα κράτησα offline, αλλά πάντα κάτι με έτρωγε και ήθελα να παράξω.",
       "en": "Never really stopped. Life just got in the way. Kept most of my videos offline for internal consumption."
-    }
+    },
+    "media": [
+      {
+        "photo": "2020-polaroid.jpg",
+        "alt": {
+          "el": "Χαμογελαστό σέλφι με τον σηκωμένο αντίχειρα μπροστά σε έναν θόλο αστεροσκοπείου.",
+          "en": "Smiling thumbs-up selfie in front of an observatory dome."
+        }
+      }
+    ]
   },
   {
     "date": "2023",
-    "title": { "el": "Η αναγέννηση.", "en": "The rebirth." },
+    "title": {
+      "el": "Η αναγέννηση.",
+      "en": "The rebirth."
+    },
     "text": {
       "el": "Δεν άντεξα άλλο. Τα short videos έγιναν φαινόμενο και τα λάτρεψα. Άρχισα ξανά να ανεβάζω στο TikTok, μαθαίνοντας τα μοτίβα. Και πήγαινε καλά.",
       "en": "Could not resist anymore. Short-form videos became a thing and I loved it. Started posting again on TikTok, trying to learn the patterns. It looked good."
-    }
+    },
+    "media": [
+      {
+        "photo": "2023-polaroid.jpg",
+        "alt": {
+          "el": "Χαμογελαστός, ξαπλωμένος σε σανίδα SUP στη θάλασσα.",
+          "en": "Smiling, lying on a paddleboard at sea."
+        }
+      }
+    ]
   },
   {
     "date": "2026",
-    "title": { "el": "Συνέπεια.", "en": "Consistency." },
+    "title": {
+      "el": "Συνέπεια.",
+      "en": "Consistency."
+    },
     "text": {
       "el": "Ποτέ δεν είχα αυστηρό πρόγραμμα, απλώς δεν σταμάτησα να ανεβάζω. Περισσότερα βίντεο. Περισσότερο περιεχόμενο. Καλύτερο μοντάζ. Καλύτερα hooks. Δούλεψα για τη Hellas Green, για το Block Fitness Gym και για άλλα brands. Λογαριασμοί social media που αλλάζουν εντελώς μορφή μόλις μπω εγώ. Άρα, μη διστάσεις. Μίλα μου.",
       "en": "Never had a strict schedule other than the fact that I kept posting. More videos. More content. Better edits. Better hooks. Worked for Hellas Green. Worked for Block Fitness Gym. Worked for other brands as well. Social media accounts that completely change shape once I step in. Do not hesitate. Talk to me."
-    }
+    },
+    "media": [
+      {
+        "photo": "2026-polaroid.jpg",
+        "alt": {
+          "el": "Σανίδα SUP στα ανοιχτά, με τη θάλασσα και τα βουνά στον ορίζοντα.",
+          "en": "A paddleboard out at sea, mountains on the horizon."
+        }
+      }
+    ]
   }
 ]

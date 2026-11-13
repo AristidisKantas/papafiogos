@@ -7,3 +7,6 @@ playwright-report/
 .DS_Store
 Thumbs.db
 .playwright-mcp/
+
+# owner's full-size originals (61 MB) - inputs for scripts/build-polaroids.mjs
+photos-originals/

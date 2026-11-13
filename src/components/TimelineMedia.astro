@@ -282,6 +282,27 @@ if (other) {
     opacity: 1;
   }
 
+  /* Single prints (the Polaroids) sit slightly crooked, like on a table; straighten on hover. */
+  .media--1 {
+    rotate: var(--print-tilt, 0deg);
+    transition: rotate 0.5s var(--ease);
+  }
+  :global(.entry--left) .media--1 {
+    --print-tilt: -1.2deg;
+  }
+  :global(.entry--right) .media--1 {
+    --print-tilt: 1deg;
+  }
+  .media--1:hover,
+  .media--1:focus-within {
+    rotate: 0deg;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .media--1 {
+      transition: none;
+    }
+  }
+
   /* Asymmetric mini-grid: one large, two small. */
   .media--2 {
     grid-template-columns: 3fr 2fr;

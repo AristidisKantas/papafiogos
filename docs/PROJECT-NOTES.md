@@ -31,7 +31,7 @@
 - **Phases 1–5 of the PRD: done** (foundation, hero, timeline, contact + polish, QA).
 - **Phase 6 (launch: GitHub, Cloudflare Pages, domain DNS, email, Search Console): not started** — on purpose.
 - Quality: `astro check` 0 errors, ESLint clean, **76 Playwright tests pass** (full §9.3 viewport matrix in both languages + interactions + SEO), Lighthouse mobile **100/100/100/100**, LCP 0.8 s, CLS 0, ~60 KB first load, JS 5.1 KB gzipped.
-- Timeline: **empty** (`[]`), showing the "Η ιστορία γράφεται. / The story is being written." screen between 2009 and Σήμερα/Today.
+- Timeline: **8 moments with photos** (2026-11-13). One black & white Polaroid print per year.
 
 ## 4. Decisions made
 
@@ -41,6 +41,7 @@
 | 2026-11-12 | **Meta descriptions approved** (PRD drafts minus "since 2009"): el "Παπαφιόγκος: φωτογραφία, βίντεο και περιεχόμενο που σε κάνει να χαμογελάς. Από την Πάτρα. Μίλα μου." / en "PAPAFIOGOS: photography, video and content that makes you smile. Based in Patras, Greece. Let's talk." |
 | 2026-11-12 | **Privacy page written.** Controller: **Αριστείδης Κάντας (PAPAFIOGOS), Πάτρα**. English spelling used: **Aristeidis Kantas** — *not yet confirmed by the owner*. Email is filled in from `site.ts`. Analytics sentence appears only once `analyticsToken` is set. |
 | 2026-11-12 | Original PRD copied into `docs/` for reference. |
+| 2026-11-13 | **Timeline photos = black & white Polaroid prints** (owner's request). Originals (`Desktoporsite.zip`, 13 photos named by year, e.g. `2014-1.jpg`) live in `photos-originals/` (**git-ignored**, 61 MB; zip extracted in `Documents\papafiogos-intake\`). `node scripts/build-polaroids.mjs` → one `media/<year>-polaroid.jpg` per year: several photos for a year → collage first (layouts for 2/3/4 photos), then B&W, then film look (S-curve, faded blacks, grain, vignette, slight softness) and the frame. Crops tuned per photo in `FOCUS` (2011 and 2017-2 adjusted). Single prints tilt ±1° on the page, straighten on hover (CSS in TimelineMedia.astro). Alt texts written by me from the photos — **owner to review**. |
 | 2026-11-12 | **Timeline filled with the owner's 8 moments** (2009, 2011, 2014, 2017, 2018, 2020, 2023, 2026), Greek = owner's own wording, English = owner's text with agreed fixes ("shit" removed, YouTube/TikTok/rap/Block Fitness Gym etc.). Text only — photos to follow. |
 | 2026-11-12 | **Handwritten slogan** (owner's request): photo `Desktop\ishootyousmile_handwritten.jpg` → traced SVG by `scripts/build-slogan.mjs` (copy of the photo in `scripts/vendor/`). Shown instead of the typed slogan; switch with `site.ts` → `sloganHandwritten` (false = typed). Real text kept hidden for screen readers / Google. ~5 KB gzipped. Owner to judge size/weight on a real phone (`sloganHandwrittenWidth`, stroke in EvasiveLogo.astro `.slogan__hand`). |
 
@@ -57,7 +58,8 @@
 ## 6. Open items / waiting on the owner
 
 - [x] Timeline texts — 8 moments added 2026-11-12.
-- [ ] **Timeline images** — owner will share (one folder; year in file name + one-line description each).
+- [x] Timeline images — added 2026-11-13 as B&W Polaroids.
+- [ ] Owner to review the photo **alt texts** (in timeline.json) and the crops/tilt.
 - [ ] 2009 start bookend duplicates the first moment's "2009" — owner hasn't decided (recommendation: remove the start bookend, keep Σήμερα/Today).
 - [ ] Owner to review the handwritten slogan on a real phone (size/weight).
 - [ ] Timeline **heading**: keep "Η ΙΣΤΟΡΙΑ / THE STORY", change, or hide (`site.ts` → `timeline.showHeading`).
@@ -119,3 +121,8 @@ npx astro preview stop # if a preview server is left running
 - Owner sent the 8 timeline texts (English) → recorded in §6b, reviewed, Greek drafts proposed; owner revised the Greek → all 8 moments added to timeline.json (text only). No-JS test made content-agnostic.
 - Handwritten slogan: traced owner's photo to SVG, replaced the typed slogan (config switch), fixed slogan centring (was offset right whenever wider than the logo box).
 - Owner will now prepare the **initial timeline** and share the info → next session: add the moments, build, test, show screenshots, commit.
+
+### 2026-11-13 — photos
+- Owner sent `forsite.zip` (13 photos). Built `scripts/build-polaroids.mjs` (collage → B&W → Polaroid), attached one print per year with el/en alt texts, slight tilt in CSS. Grain lowered (0.045 → 0.03) to keep AVIF sizes down (~70 KB on a phone per print).
+- Checks: astro check 0 errors, ESLint clean, 76/76 Playwright pass.
+- To redo a photo: put the new original in `photos-originals/` (name starts with the year), run `node scripts/build-polaroids.mjs`, adjust `FOCUS` if a crop is off.
