@@ -25,6 +25,7 @@ Everything you need to run, check, change and (later) publish the site, in one p
 9. [Other texts and settings](#9-other-texts-and-settings)
 10. [Check before you save](#10-check-before-you-save)
 11. [Save your work (git) and what's in the repo](#11-save-your-work-git-and-whats-in-the-repo)
+    - [Move the project to another computer](#move-the-project-to-another-computer)
 12. [Going live (later)](#12-going-live-later)
 13. [Troubleshooting](#13-troubleshooting)
 14. [Map of the project](#14-map-of-the-project)
@@ -394,6 +395,40 @@ originals in `scripts/vendor/`, the scripts that make them, tests, and these doc
 | `node_modules/` | Downloaded tools; `npm install` brings them back. |
 | `dist/`, `.astro/` | Build output; `npm run build` recreates it. |
 | `test-results/`, `playwright-report/` | Test leftovers. |
+
+### Move the project to another computer
+
+**Make the zip (on the old computer)**, in the project folder:
+
+```bash
+npm run zip
+```
+
+It creates `papafiogos-site-<date>.zip` on the **Desktop**: every project file **plus the git history**
+(so `git log` and "undo" commands keep working), **without** `node_modules/`, `dist/`, `.astro/`, test
+output and `photos-originals/`. Commit your changes first: the zip contains what git knows about.
+
+**Set it up (on the new computer):**
+
+1. Install **Node.js 22 or newer** (<https://nodejs.org>, the LTS version) and **Git**
+   (<https://git-scm.com>).
+2. Unzip it, e.g. to `Documents\papafiogos-site` (Windows) or `~/Documents/papafiogos-site` (Mac).
+   A path without spaces or Greek letters is safest.
+3. Open a terminal **in that folder** and run:
+   ```bash
+   npm ci          # installs the exact same tool versions (1-2 minutes, needs internet)
+   npm run dev     # then open http://localhost:4321
+   ```
+4. Optional, to run the automatic tests there: `npx playwright install chromium`, then `npm test`
+   (should end with "76 passed").
+5. Optional: `git log --oneline` shows the history came along.
+
+Works on **Windows and Mac**: `npm ci` downloads the image tools that fit that computer. If `npm ci`
+complains, run `npm install` instead.
+
+**Photo originals:** only needed to rebuild the Polaroid prints (the finished prints are in the zip).
+To do that on the new computer, copy your full-size photos into a `photos-originals/` folder inside the
+project (names start with the year) and run `npm run polaroids`.
 
 ---
 

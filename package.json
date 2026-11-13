@@ -16,7 +16,11 @@
     "test": "playwright test",
     "brand": "node scripts/build-brand.mjs",
     "polaroids": "node scripts/build-polaroids.mjs",
-    "handwriting": "node scripts/build-slogan.mjs"
+    "handwriting": "node scripts/build-slogan.mjs",
+    "zip": "node scripts/make-zip.mjs"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

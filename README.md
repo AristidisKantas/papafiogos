@@ -32,6 +32,7 @@ Other commands:
 | `npm test` | Runs the 76 automatic tests (every screen size, the logo, contact, languages, SEO). |
 | `npm run polaroids` | Rebuilds the black & white Polaroid prints from `photos-originals/` (guide §7). |
 | `npm run handwriting` | Re-traces your handwriting from the photos in `scripts/vendor/` (guide §8). |
+| `npm run zip` | Packs the project (with git history, without `node_modules`) into a zip on the Desktop, to move it to another computer. See the guide, "Move the project to another computer". |
 
 ---
 
