@@ -1,5 +1,7 @@
 ---
 import ContactItem from './ContactItem.astro';
+import handEl from '../assets/brand/talk-el-handwritten.json';
+import handEn from '../assets/brand/talk-en-handwritten.json';
 import { site, type Locale } from '../config/site';
 import { anchors, pagePath, t } from '../i18n/utils';
 
@@ -10,6 +12,7 @@ const { locale } = Astro.props;
 const c = site.contact;
 const year = new Date().getFullYear();
 const listId = 'contact-items';
+const hand = locale === 'el' ? handEl : handEn;
 ---
 
 <section
@@ -33,7 +36,23 @@ const listId = 'contact-items';
         data-talk
       >
         <span class="talk__breathe">
-          <span class="talk__text">{t(locale, 'talkToMe')}</span>
+          {site.talkHandwritten ? (
+            <span class="talk__text talk__text--hand">
+              <svg
+                class="talk__hand"
+                viewBox={hand.viewBox}
+                width={hand.width}
+                height={hand.height}
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path fill-rule="evenodd" d={hand.d} />
+              </svg>
+              <span class="visually-hidden">{t(locale, 'talkToMe')}</span>
+            </span>
+          ) : (
+            <span class="talk__text">{t(locale, 'talkToMe')}</span>
+          )}
         </span>
       </button>
     </h2>
@@ -129,6 +148,22 @@ const listId = 'contact-items';
     transform: scaleX(0);
     transform-origin: 0 50%;
     transition: transform var(--talk-underline-ms) var(--ease);
+  }
+  /* handwritten version: the traced SVG, sized by height so both languages match */
+  .talk__text--hand {
+    line-height: 0;
+    padding-bottom: 0.1em;
+  }
+  .talk__hand {
+    height: var(--talk-hand-h);
+    width: auto;
+    max-width: calc(100vw - 4.5rem);
+    fill: currentColor;
+    /* extra weight that stays the same at every size (the pen line is thin) */
+    stroke: currentColor;
+    stroke-width: 0.9px;
+    vector-effect: non-scaling-stroke;
+    paint-order: stroke;
   }
   @media (hover: hover) {
     .talk:hover .talk__text::after {

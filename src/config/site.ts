@@ -16,6 +16,13 @@ export const site = {
   sloganHandwritten: true,
   /** Width of the handwritten slogan (height follows). */
   sloganHandwrittenWidth: 'clamp(220px, 22vw + 140px, 600px)',
+  /**
+   * "Μίλα μου" / "Talk to me" in the owner's handwriting (same tracing script).
+   * false = typed in the site font instead.
+   */
+  talkHandwritten: true,
+  /** Height of the handwritten "Μίλα μου" / "Talk to me" (width follows). */
+  talkHandwrittenHeight: 'clamp(4.75rem, 3rem + 6vw, 8rem)',
   /** Search / link-preview description (approved by the owner 2026-11-12). */
   description: {
     el: 'Παπαφιόγκος: φωτογραφία, βίντεο και περιεχόμενο που σε κάνει να χαμογελάς. Από την Πάτρα. Μίλα μου.',
