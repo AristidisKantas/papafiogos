@@ -11,6 +11,9 @@ import potrace from 'potrace';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = path.join(root, 'src/assets/brand');
+// Decimals kept in the output path. 0 is visually identical (checked at 3x the largest
+// size on the site): 1 unit = half a pixel of the photo crop.
+const PRECISION = Number(process.env.HAND_PRECISION ?? 0);
 
 // Each job: a photo of the owner's handwriting, the region that holds one phrase, the output name.
 // Crops are in the photo's own pixels (both photos are 4032×3024).
@@ -89,11 +92,87 @@ async function trace({ src: file, crop, out: name, label }) {
   const vb = [minX - pad, minY - pad, maxX - minX + 2 * pad, maxY - minY + 2 * pad].map((v) =>
     Math.round(v),
   );
-  const out = { viewBox: vb.join(' '), width: vb[2], height: vb[3], d };
+  const out = { viewBox: vb.join(' '), width: vb[2], height: vb[3], d: compact(d, PRECISION) };
   fs.writeFileSync(path.join(outDir, `${name}.json`), JSON.stringify(out) + '\n');
   fs.writeFileSync(
     path.join(outDir, `${name}.svg`),
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${out.viewBox}" role="img" aria-label="${label}"><path fill="#000" fill-rule="evenodd" d="${d}"/></svg>\n`,
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${out.viewBox}" role="img" aria-label="${label}"><path fill="#000" fill-rule="evenodd" d="${out.d}"/></svg>\n`,
   );
-  console.log(`${name}: ${vb[2]}×${vb[3]}, path ${(d.length / 1024).toFixed(1)} KB`);
+  console.log(`${name}: ${vb[2]}×${vb[3]}, path ${(out.d.length / 1024).toFixed(1)} KB`);
+}
+
+/**
+ * Rewrite potrace's absolute path (M/C/L/Z) as a compact relative path: lower-case commands,
+ * repeated commands without the letter, no commas, coordinates rounded to `dec` decimals.
+ * Rounding is done against the already-rounded current point, so errors never add up.
+ */
+function compact(d, dec) {
+  const f = 10 ** dec;
+  const r = (v) => Math.round(v * f) / f;
+  const fmt = (v) => String(r(v) || 0).replace(/^(-?)0\./, '$1.');
+  const toks = d.match(/[MCLZ]|-?\d*\.?\d+/gi);
+  let out = '';
+  let cx = 0,
+    cy = 0,
+    sx = 0,
+    sy = 0,
+    last = '',
+    i = 0;
+  const num = () => Number(toks[i++]);
+  const emit = (cmd, nums) => {
+    const body = nums.map(fmt).reduce((s, n) => s + (s && !n.startsWith('-') ? ' ' : '') + n, '');
+    out += (cmd === last ? (body.startsWith('-') ? '' : ' ') : cmd) + body;
+    last = cmd;
+  };
+  while (i < toks.length) {
+    const c = toks[i++].toUpperCase();
+    if (c === 'M') {
+      const x = num(),
+        y = num();
+      if (!out) {
+        cx = r(x);
+        cy = r(y);
+        emit('M', [cx, cy]);
+      } else {
+        const dx = r(x - cx),
+          dy = r(y - cy);
+        cx += dx;
+        cy += dy;
+        emit('m', [dx, dy]);
+      }
+      sx = cx;
+      sy = cy;
+      last = 'm-start'; // the next segment always repeats its letter
+    } else if (c === 'C') {
+      // potrace repeats "C" for each curve, but be safe with implicit repeats too
+      do {
+        const p = [num(), num(), num(), num(), num(), num()];
+        const rel = [
+          r(p[0] - cx),
+          r(p[1] - cy),
+          r(p[2] - cx),
+          r(p[3] - cy),
+          r(p[4] - cx),
+          r(p[5] - cy),
+        ];
+        emit('c', rel);
+        cx += rel[4];
+        cy += rel[5];
+      } while (i < toks.length && /^[-\d.]/.test(toks[i]));
+    } else if (c === 'L') {
+      do {
+        const dx = r(num() - cx),
+          dy = r(num() - cy);
+        emit('l', [dx, dy]);
+        cx += dx;
+        cy += dy;
+      } while (i < toks.length && /^[-\d.]/.test(toks[i]));
+    } else if (c === 'Z') {
+      out += 'z';
+      last = 'z';
+      cx = sx;
+      cy = sy;
+    } else throw new Error(`Unexpected path command ${c}`);
+  }
+  return out;
 }

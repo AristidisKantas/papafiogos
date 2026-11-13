@@ -8,9 +8,8 @@ interface Props {
   moment: Moment;
   locale: Locale;
   side: 'left' | 'right';
-  eagerMedia: boolean;
 }
-const { moment, locale, side, eagerMedia } = Astro.props;
+const { moment, locale, side } = Astro.props;
 const label = pick(moment.label, locale) ?? String(moment.year);
 const title = pick(moment.title, locale)!;
 const text = pick(moment.text, locale);
@@ -35,7 +34,7 @@ const textLang = moment.text && !moment.text[locale] ? (locale === 'el' ? 'en' :
     )}
     {moment.media.length > 0 && (
       <div class="entry__media">
-        <TimelineMedia media={moment.media} locale={locale} eager={eagerMedia} group={moment.id} />
+        <TimelineMedia media={moment.media} locale={locale} group={moment.id} />
       </div>
     )}
   </article>

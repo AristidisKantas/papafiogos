@@ -8,11 +8,9 @@ import type { MediaItem } from '../lib/timeline-validate';
 interface Props {
   media: MediaItem[];
   locale: Locale;
-  /** true for the first timeline image on the page (not lazy) */
-  eager: boolean;
   group: string;
 }
-const { media, locale, eager, group } = Astro.props;
+const { media, locale, group } = Astro.props;
 
 const COL = '(min-width: 1200px) 504px, (min-width: 768px) 42vw, calc(100vw - 64px)';
 const scaled = (f: number) =>
@@ -136,8 +134,7 @@ if (other) {
           widths={p.widths}
           sizes={p.sizes}
           quality={80}
-          loading={eager && i === 0 ? 'eager' : 'lazy'}
-          fetchpriority={eager && i === 0 ? 'high' : undefined}
+          loading="lazy"
           decoding="async"
         />
       </a>

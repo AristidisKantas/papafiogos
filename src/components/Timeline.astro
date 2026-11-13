@@ -17,7 +17,6 @@ const moments = all
   .sort((a, b) => a.date.localeCompare(b.date) || a.index - b.index);
 if (site.timeline.order === 'newest-first') moments.reverse();
 
-const firstWithMedia = moments.findIndex((m) => m.media.length > 0);
 const empty = moments.length === 0;
 const showBookends = site.timeline.bookends;
 const yearLabel = String(site.timeline.startYear);
@@ -69,7 +68,6 @@ const headingId = 'timeline-heading';
             moment={m}
             locale={locale}
             side={i % 2 === 0 ? 'left' : 'right'}
-            eagerMedia={i === firstWithMedia}
           />
         ))}
       </ol>
