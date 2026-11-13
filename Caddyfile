@@ -1,0 +1,68 @@
+# Web server config for Railway (Railpack serves the built site with Caddy and uses this file
+# instead of its default because it sits in the project root). Based on Railpack's default
+# Node/SPA template, plus: real 404s (no "every unknown URL shows the home page"), caching,
+# and the security headers from public/_headers (which only Cloudflare Pages reads).
+# The Content-Security-Policy itself is a <meta> tag in every page (astro.config.mjs).
+# Test locally:  SITE_ROOT=dist PORT=4330 caddy run --config Caddyfile --adapter caddyfile
+{
+	admin off
+	persist_config off
+	auto_https off
+
+	log {
+		format json
+	}
+
+	servers {
+		trusted_proxies static private_ranges 100.0.0.0/8 # Railway's proxy
+	}
+}
+
+:{$PORT:80} {
+	log {
+		format json
+	}
+
+	respond /health 200
+
+	# One address for Google: www.papafiogos.gr -> papafiogos.gr (only once the domain points here)
+	@www host www.papafiogos.gr
+	redir @www https://papafiogos.gr{uri} 308
+
+	# Railpack copies the build to /app/dist
+	root * {$SITE_ROOT:/app/dist}
+
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+		X-Frame-Options "DENY"
+		-Server
+	}
+
+	# Caching: hashed build files never change; icons/preview for a day; pages always re-checked.
+	@immutable path /_astro/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+	@daily path /favicon.svg /favicon.ico /apple-touch-icon.png /og-image.jpg
+	header @daily Cache-Control "public, max-age=86400"
+	@pages not path /_astro/* /favicon.svg /favicon.ico /apple-touch-icon.png /og-image.jpg
+	header @pages Cache-Control "public, max-age=0, must-revalidate"
+
+	# /en -> /en/index.html etc. No fallback to the home page: unknown paths are real 404s.
+	try_files {path} {path}.html {path}/index.html
+
+	file_server {
+		hide .git .env*
+	}
+
+	# Unknown paths: our own 404 page (it switches to English for /en/... URLs), status 404.
+	handle_errors {
+		rewrite * /404.html
+		file_server {
+			status {err.status_code}
+		}
+	}
+}

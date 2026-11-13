@@ -6,8 +6,9 @@ Greek at `/`, English at `/en/`.
 > 📘 **The complete guide** (run locally, test on a phone, photos, handwriting, settings,
 > troubleshooting): [`docs/GUIDE.md`](docs/GUIDE.md).
 
-> **Status:** built and tested **locally only**. Nothing has been pushed to GitHub or deployed.
-> Going live (GitHub + Cloudflare Pages + domain) is a separate, later step — see [Going live](#going-live-later).
+> **Status:** live on **Railway** (<https://papafiogos-production.up.railway.app/>), deployed from
+> GitHub <https://github.com/AristidisKantas/papafiogos> (every push to `main` deploys). Next: connect
+> `papafiogos.gr` and Google — see [Going live](#6-going-live).
 
 ---
 
@@ -182,17 +183,14 @@ A failed build never replaces a live site — the last good version stays online
 
 ---
 
-## 6. Going live (later)
+## 6. Going live
 
-Not done yet, on purpose. When you want it online:
+The site runs on **Railway**: every push to `main` on GitHub deploys it. Railway serves the built
+site with Caddy using the **`Caddyfile`** in the project root (real 404s, caching, security headers,
+`www` → `papafiogos.gr`). `public/_headers` is only for Cloudflare Pages and is ignored on Railway.
 
-1. Create a **private** GitHub repository `papafiogos-site` and push this folder (`git remote add origin …`, `git push -u origin main`).
-2. **Cloudflare Pages** → *Create project* → connect the repo. Build command `npm run build`, output folder `dist`. Every push to `main` publishes; other branches get preview URLs.
-3. Add the custom domains `papafiogos.gr` + `www.papafiogos.gr`, with a redirect `www → papafiogos.gr`.
-4. Turn on **Web Analytics**, paste the token into `site.ts`.
-5. Submit `https://papafiogos.gr/sitemap-index.xml` in Google Search Console and Bing Webmaster Tools.
-
-`public/_headers` already holds the caching and security headers Cloudflare Pages will apply. The Content-Security-Policy is generated per page by Astro.
+Connecting `papafiogos.gr`, Google Search Console, Google Business Profile and email: step by step in
+[the guide §12](docs/GUIDE.md#12-the-live-site-railway-your-domain-and-google).
 
 ---
 

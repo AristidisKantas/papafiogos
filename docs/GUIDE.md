@@ -26,7 +26,7 @@ Everything you need to run, check, change and (later) publish the site, in one p
 10. [Check before you save](#10-check-before-you-save)
 11. [Save your work (git) and what's in the repo](#11-save-your-work-git-and-whats-in-the-repo)
     - [Move the project to another computer](#move-the-project-to-another-computer)
-12. [Going live (later)](#12-going-live-later)
+12. [The live site (Railway), your domain and Google](#12-the-live-site-railway-your-domain-and-google)
 13. [Troubleshooting](#13-troubleshooting)
 14. [Map of the project](#14-map-of-the-project)
 
@@ -432,18 +432,55 @@ project (names start with the year) and run `npm run polaroids`.
 
 ---
 
-## 12. Going live (later)
+## 12. The live site (Railway), your domain and Google
 
-Not done, on purpose. Steps when you decide (details in [`README.md` §6](../README.md#6-going-live-later)):
+**Where it runs:** Railway, from the GitHub repo <https://github.com/AristidisKantas/papafiogos>
+(branch `main`). Every push to `main` deploys. Railway address:
+<https://papafiogos-production.up.railway.app/>
 
-1. Private GitHub repository → push this folder.
-2. Cloudflare Pages → connect the repo (build `npm run build`, output `dist`).
-3. Domains `papafiogos.gr` + `www` (redirect www → papafiogos.gr).
-4. Cloudflare Web Analytics → paste the token into `site.ts` → `analyticsToken`.
-5. Google Search Console / Bing: submit `https://papafiogos.gr/sitemap-index.xml`.
-6. Email `info@papafiogos.gr` (Zoho), then switch `contact.email` in `site.ts`.
+**How Railway serves it:** Railway's builder (Railpack) runs `npm run build` and serves the `dist/`
+folder with the Caddy web server, using the **`Caddyfile`** in the project root. That file adds:
+real 404 pages (unknown addresses get the 404 page, not the home page), browser caching, security
+headers, and the `www` → `papafiogos.gr` redirect. (`public/_headers` is for Cloudflare Pages and is
+ignored on Railway.) After a deploy you can check the headers at <https://securityheaders.com>.
 
-After that, the Pages CMS form editor (edit the timeline from your phone) also works.
+### Connect papafiogos.gr
+
+1. Railway → your service → **Settings → Networking → Custom Domain** → add `papafiogos.gr`, then
+   also `www.papafiogos.gr`.
+2. Railway shows the **DNS records** to create (a CNAME target, and possibly a TXT record to prove
+   the domain is yours). Create exactly those at the company that manages your domain's DNS.
+3. **The bare domain** (`papafiogos.gr`, no `www`) needs a CNAME at the "root", which many Greek
+   registrars don't allow. If yours doesn't (no "ALIAS"/"ANAME"/"CNAME flattening" option), move the
+   domain's DNS to **Cloudflare (free plan)**: add the site there, set the two nameservers it gives you
+   at your registrar, then add Railway's records in Cloudflare (set them to **DNS only**, grey cloud).
+4. Wait until Railway shows the domain as active (minutes to a few hours). HTTPS is automatic.
+5. Test <https://papafiogos.gr/>, <https://www.papafiogos.gr/> (should forward to papafiogos.gr) and
+   a wrong address like <https://papafiogos.gr/xyz> (should show the 404 page).
+
+The site already tells Google its real address is `https://papafiogos.gr` (canonical links, sitemap),
+so nothing in the code needs to change when the domain goes live.
+
+### Google (after the domain works)
+
+1. **Google Search Console** (<https://search.google.com/search-console>) → add a **Domain** property
+   `papafiogos.gr` → it gives a **TXT record**: add it in your DNS → Verify.
+2. In Search Console → **Sitemaps** → submit `sitemap-index.xml`.
+3. **URL inspection** → `https://papafiogos.gr/` → **Request indexing** (also for `/en/`).
+4. **Google Business Profile** (<https://business.google.com>): create a profile for PAPAFIOGOS
+   (photographer / videographer, Patras), add the website `https://papafiogos.gr`. This is what makes
+   you appear on Google Maps and for "φωτογράφος Πάτρα"-type searches.
+5. Optional: **Bing Webmaster Tools** can import everything from Search Console in one click.
+6. Put `papafiogos.gr` in your Instagram / TikTok bios.
+
+### Later (optional)
+
+- Email `info@papafiogos.gr` (e.g. Zoho Mail free plan; it adds MX/TXT records to your DNS), then
+  switch `contact.email` in `site.ts`.
+- Visitor statistics without cookies: Cloudflare Web Analytics works on any host; paste its token into
+  `site.ts` → `analyticsToken` (the privacy text then mentions it automatically).
+- The Pages CMS form editor (edit the timeline from your phone) works with the GitHub repo:
+  see README §2.
 
 ---
 
@@ -493,6 +530,7 @@ papafiogos-site/
 ├── photos-originals/            your full-size photos (NOT in git, back up yourself)
 ├── tests/                       automatic tests (npm test)
 ├── integrations/prune-media.mjs leaves unused media out of the build
+├── Caddyfile                    Railway web server: real 404s, caching, security headers
 ├── astro.config.mjs             site address, languages, security policy
 └── package.json                 the npm commands
 ```

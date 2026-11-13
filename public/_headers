@@ -1,4 +1,4 @@
-# Cloudflare Pages headers (only used if/when the site is deployed there).
+# Cloudflare Pages headers (NOT used on Railway, which reads the Caddyfile in the project root).
 # The Content-Security-Policy itself is generated per page by Astro as a <meta>
 # tag (with hashes for every inline script/style), see astro.config.mjs.
 
