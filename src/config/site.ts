@@ -58,6 +58,14 @@ export const site = {
     bookends: true,
     startYear: 2009,
     showHeading: true, // set false to hide "Η ΙΣΤΟΡΙΑ / THE STORY"
+    /**
+     * Moment titles in the owner's handwriting (traced from scripts/vendor/timeline.jpg by
+     * npm run handwriting into src/assets/brand/timeline/<year>-<lang>.json). A moment
+     * without a traced title falls back to the typed title. false = typed titles everywhere.
+     */
+    handwrittenTitles: true,
+    /** Size of the handwritten titles: em per traced unit (bigger = larger writing). */
+    handwrittenTitleScale: 0.023,
     maxPhotos: 3,
     maxTextLength: 400,
     maxVideoMB: 4,

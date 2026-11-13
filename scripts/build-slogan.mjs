@@ -38,9 +38,41 @@ const JOBS = [
   },
 ];
 
+// Timeline titles (timeline.jpg): one phrase per moment and language -> timeline/<year>-<lang>.
+// The site shows them instead of the typed title when site.timeline.handwrittenTitles is on.
+// Some cells are the same phrase in both languages (Instagram, Video Clips, Papafiogos TV).
+const TITLE_CROPS = {
+  '2009-el': [330, 180, 1160, 270],
+  '2009-en': [1720, 180, 1060, 240],
+  '2011-el': [250, 460, 1960, 230],
+  '2011-en': [250, 695, 1700, 180],
+  '2014-el': [270, 980, 790, 250],
+  '2014-en': [270, 980, 790, 250],
+  '2017-el': [1340, 970, 920, 230],
+  '2017-en': [1340, 970, 920, 230],
+  '2018-el': [260, 1340, 1040, 310],
+  '2018-en': [260, 1340, 1040, 310],
+  '2020-el': [250, 1710, 1060, 230],
+  '2020-en': [1510, 1710, 800, 200],
+  '2023-el': [280, 2050, 920, 230],
+  '2023-en': [1540, 2040, 920, 220],
+  '2026-el': [260, 2470, 590, 200],
+  '2026-en': [1140, 2460, 770, 260],
+};
+fs.mkdirSync(path.join(outDir, 'timeline'), { recursive: true });
+for (const [key, [left, top, width, height]] of Object.entries(TITLE_CROPS)) {
+  JOBS.push({
+    src: 'timeline.jpg',
+    crop: { left, top, width, height },
+    out: `timeline/${key}`,
+    label: key,
+    turd: Number(process.env.TITLE_TURD ?? 6), // small writing: keep accents and full stops
+  });
+}
+
 for (const job of JOBS) await trace(job);
 
-async function trace({ src: file, crop, out: name, label }) {
+async function trace({ src: file, crop, out: name, label, turd = 40 }) {
   const src = path.join(root, 'scripts/vendor', file);
   // 1. Ink mask: compare each pixel with a heavily blurred copy (= the paper and its
   //    lighting), so shadows and the vignette disappear; keep dark or blue strokes.
@@ -62,11 +94,11 @@ async function trace({ src: file, crop, out: name, label }) {
     .png()
     .toBuffer();
 
-  // 2. Trace to vector. turdSize drops paper specks; the full stops are much bigger.
+  // 2. Trace to vector. turdSize (`turd`) drops paper specks smaller than that many pixels.
   const svg = await new Promise((resolve, reject) =>
     potrace.trace(
       png,
-      { turdSize: 40, optTolerance: 0.4, alphaMax: 1, threshold: 128, color: '#000' },
+      { turdSize: turd, optTolerance: 0.4, alphaMax: 1, threshold: 128, color: '#000' },
       (err, out) => (err ? reject(err) : resolve(out)),
     ),
   );

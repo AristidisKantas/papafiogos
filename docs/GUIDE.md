@@ -307,17 +307,24 @@ Three phrases are your own handwriting, traced from phone photos into clean vect
 | I shoot. You smile. | Behind the logo | `ishootyousmile_handwritten.jpg` | `slogan-handwritten.*` |
 | Μίλα μου. | Contact button, Greek page | `talktome.jpg` | `talk-el-handwritten.*` |
 | Talk to me. | Contact button, English page | `talktome.jpg` | `talk-en-handwritten.*` |
+| Timeline titles (16: 8 Greek + 8 English) | Each moment's title | `timeline.jpg` | `timeline/<year>-<lang>.*` |
 
 The real words are also in the page (hidden), so screen readers and Google still read them.
 
-**Switch back to typed text:** `src/config/site.ts` → `sloganHandwritten: false` and/or
-`talkHandwritten: false`.
+**Switch back to typed text:** `src/config/site.ts` → `sloganHandwritten: false`,
+`talkHandwritten: false` and/or `timeline.handwrittenTitles: false`.
+
+**Timeline titles** are matched by **year + language** (`2009-el`, `2009-en`, …). If you change a
+title's words in `timeline.json`, the handwriting doesn't change: write the new title, photograph it,
+and add/adjust its crop in `TITLE_CROPS` in `scripts/build-slogan.mjs`. A moment with no handwritten
+title simply shows the typed one. Size: `site.ts` → `timeline.handwrittenTitleScale`.
 
 **Size:** `site.ts` → `sloganHandwrittenWidth` (slogan width) and `talkHandwrittenHeight`
 (Μίλα μου / Talk to me height). The values are `clamp(smallest, grows-with-screen, largest)`.
 
 **Thickness:** `stroke-width` in `src/components/EvasiveLogo.astro` (`.slogan__hand`, 0.35px) and
-`src/components/Contact.astro` (`.talk__hand`, 0.9px). Bigger = bolder.
+`src/components/Contact.astro` (`.talk__hand`, 0.9px) and `src/components/Timeline.astro`
+(`.entry__hand`, 0.6px). Bigger = bolder.
 
 **New handwriting:**
 

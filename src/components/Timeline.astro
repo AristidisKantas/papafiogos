@@ -64,11 +64,7 @@ const headingId = 'timeline-heading';
     ) : (
       <ol class="timeline__list">
         {moments.map((m, i) => (
-          <TimelineEntry
-            moment={m}
-            locale={locale}
-            side={i % 2 === 0 ? 'left' : 'right'}
-          />
+          <TimelineEntry moment={m} locale={locale} side={i % 2 === 0 ? 'left' : 'right'} />
         ))}
       </ol>
     )}
@@ -226,6 +222,22 @@ const headingId = 'timeline-heading';
     line-height: 1.25;
     letter-spacing: -0.01em;
     text-wrap: balance;
+  }
+  /* handwritten title (traced SVG): sized in em, so it follows the title font size */
+  .timeline :global(.entry__title--hand) {
+    line-height: 0;
+    padding: 0.15em 0;
+  }
+  .timeline :global(.entry__hand) {
+    display: inline-block;
+    max-width: 100%;
+    height: auto;
+    fill: currentColor;
+    /* extra weight that stays the same at every size (the pen line is thin) */
+    stroke: currentColor;
+    stroke-width: 0.6px;
+    vector-effect: non-scaling-stroke;
+    paint-order: stroke;
   }
   .timeline :global(.entry__text) {
     order: 2;

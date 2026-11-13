@@ -1,6 +1,6 @@
 ---
 import TimelineMedia from './TimelineMedia.astro';
-import type { Locale } from '../config/site';
+import { site, type Locale } from '../config/site';
 import { pick } from '../i18n/utils';
 import type { Moment } from '../lib/timeline-validate';
 
@@ -15,6 +15,16 @@ const title = pick(moment.title, locale)!;
 const text = pick(moment.text, locale);
 // mark text that falls back to the other language with the right lang attribute
 const titleLang = moment.title[locale] ? undefined : locale === 'el' ? 'en' : 'el';
+// The owner's handwritten title for this year + page language, if one was traced.
+type Hand = { viewBox: string; width: number; height: number; d: string };
+const hands = import.meta.glob<Hand>('../assets/brand/timeline/*.json', {
+  eager: true,
+  import: 'default',
+});
+const hand = site.timeline.handwrittenTitles
+  ? hands[`../assets/brand/timeline/${moment.year}-${locale}.json`]
+  : undefined;
+const em = (units: number) => `${(units * site.timeline.handwrittenTitleScale).toFixed(3)}em`;
 const textLang = moment.text && !moment.text[locale] ? (locale === 'el' ? 'en' : 'el') : undefined;
 ---
 
@@ -24,9 +34,27 @@ const textLang = moment.text && !moment.text[locale] ? (locale === 'el' ? 'en' :
     <p class="entry__year">
       <time datetime={moment.date}>{label}</time>
     </p>
-    <h3 class="entry__title" lang={titleLang}>
-      {title}
-    </h3>
+    {hand ? (
+      <h3 class="entry__title entry__title--hand">
+        <svg
+          class="entry__hand"
+          viewBox={hand.viewBox}
+          width={em(hand.width)}
+          height={em(hand.height)}
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path fill-rule="evenodd" d={hand.d} />
+        </svg>
+        <span class="visually-hidden" lang={titleLang}>
+          {title}
+        </span>
+      </h3>
+    ) : (
+      <h3 class="entry__title" lang={titleLang}>
+        {title}
+      </h3>
+    )}
     {text && (
       <p class="entry__text" lang={textLang}>
         {text}
