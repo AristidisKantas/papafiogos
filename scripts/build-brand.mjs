@@ -147,10 +147,28 @@ await sharp({ create: { width: 180, height: 180, channels: 3, background: '#fff'
   .png()
   .toFile(path.join(pub, 'apple-touch-icon.png'));
 
-// og-image 1200x630, full mark centred on white
-const ogLogo = await sharp(full, { density: 300 }).resize({ height: 500 }).png().toBuffer();
+// og-image 1200x630 (link previews): the mark with the owner's handwritten slogan under it.
+// Everything stays inside the centre square, because some apps crop previews to a square.
+const ogLogo = await sharp(full, { density: 300 }).resize({ height: 410 }).png().toBuffer();
+const hand = JSON.parse(fs.readFileSync(path.join(brandDir, 'slogan-handwritten.json'), 'utf8'));
+const handW = 540;
+const handSvg = Buffer.from(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${hand.viewBox}" width="${handW}" height="${Math.round((handW * hand.height) / hand.width)}"><path fill="#000" stroke="#000" stroke-width="2" stroke-linejoin="round" fill-rule="evenodd" d="${hand.d}"/></svg>`,
+);
+const ogHand = await sharp(handSvg, { density: 144 }).resize({ width: handW }).png().toBuffer();
+const ogLogoMeta = await sharp(ogLogo).metadata();
+const ogHandMeta = await sharp(ogHand).metadata();
+const ogGap = 34;
+const ogTop = Math.round((630 - ogLogoMeta.height - ogGap - ogHandMeta.height) / 2);
 await sharp({ create: { width: 1200, height: 630, channels: 3, background: '#fff' } })
-  .composite([{ input: ogLogo, gravity: 'centre' }])
+  .composite([
+    { input: ogLogo, left: Math.round((1200 - ogLogoMeta.width) / 2), top: ogTop },
+    {
+      input: ogHand,
+      left: Math.round((1200 - ogHandMeta.width) / 2),
+      top: ogTop + ogLogoMeta.height + ogGap,
+    },
+  ])
   .jpeg({ quality: 88, mozjpeg: true })
   .toFile(path.join(pub, 'og-image.jpg'));
 
