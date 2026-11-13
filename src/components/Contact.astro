@@ -81,6 +81,17 @@ const hand = locale === 'el' ? handEl : handEn;
       </ul>
     </noscript>
   </div>
+  {c.brands.length > 0 && (
+    <div class="brands">
+      <p class="brands__label">{t(locale, 'workedWith')}</p>
+      <ul class="brands__list" lang="en">
+        {c.brands.map((b) => (
+          <li>{b}</li>
+        ))}
+        <li lang={locale}>{t(locale, 'andMore')}</li>
+      </ul>
+    </div>
+  )}
   <p class="toast" role="status" aria-live="polite" data-toast></p>
   <footer class="footer">
     <span>
@@ -95,7 +106,7 @@ const hand = locale === 'el' ? handEl : handEn;
   .contact {
     position: relative;
     display: grid;
-    grid-template-rows: 1fr auto;
+    grid-template-rows: 1fr auto auto;
     background: var(--white);
     color: var(--black);
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
@@ -108,6 +119,42 @@ const hand = locale === 'el' ? handEl : handEn;
     justify-content: center;
     gap: clamp(1.5rem, 5vh, 3rem);
     padding: 4rem 1.5rem 2rem;
+  }
+  /* "Worked with": a quiet line of brand names, separated by dots */
+  .brands {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: 1rem 1.5rem 0;
+    text-align: center;
+  }
+  .brands__label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-70);
+  }
+  .brands__list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 1.4em;
+    row-gap: 0.1rem;
+    font-size: clamp(0.8125rem, 0.75rem + 0.25vw, 0.9375rem);
+    font-weight: 300;
+    line-height: 1.8;
+  }
+  .brands__list li {
+    white-space: nowrap;
+  }
+  .brands__list li:last-child {
+    color: var(--ink-70);
   }
   .contact__h2 {
     font: inherit;

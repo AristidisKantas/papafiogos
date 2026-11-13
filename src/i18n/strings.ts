@@ -7,6 +7,8 @@ export const strings = {
     slogan: 'I shoot. You smile.', // stays in English on purpose
     timelineHeading: 'Η ιστορία', // shown uppercase: Η ΙΣΤΟΡΙΑ
     talkToMe: 'Μίλα μου',
+    workedWith: 'Έχω συνεργαστεί με', // shown small, uppercase, above Μίλα μου
+    andMore: 'και άλλα',
     copied: 'Αντιγράφηκε',
     skipToContact: 'Μετάβαση στην επικοινωνία',
     notFound: 'Χάθηκες; Πάμε σπίτι.',
@@ -42,6 +44,8 @@ export const strings = {
     slogan: 'I shoot. You smile.',
     timelineHeading: 'The story',
     talkToMe: 'Talk to me',
+    workedWith: 'Worked with',
+    andMore: 'and more',
     copied: 'Copied',
     skipToContact: 'Skip to contact',
     notFound: 'Lost? Let’s go home.',

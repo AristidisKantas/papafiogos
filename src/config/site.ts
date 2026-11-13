@@ -48,6 +48,19 @@ export const site = {
      * (it uses the phone number above), add 'whatsapp' to this list.
      */
     items: ['instagram', 'email', 'phone'] as ('instagram' | 'email' | 'phone' | 'whatsapp')[],
+    /**
+     * Brands shown in a small line above "Μίλα μου" / "Talk to me", in this order,
+     * followed by "και άλλα / and more". Empty list [] = the line disappears.
+     */
+    brands: [
+      'Daniel Wellington',
+      'CabinZero',
+      'Hawkers',
+      'Paul Hewitt',
+      'Amacx Greece',
+      'Hellas Green',
+      'Block Fitness Gym',
+    ],
     /** Copy-to-clipboard on long-press / right-click (email + phone). */
     copyToClipboard: true,
     copiedToastMs: 1200,

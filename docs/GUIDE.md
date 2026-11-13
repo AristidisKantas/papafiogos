@@ -341,13 +341,14 @@ title simply shows the typed one. Size: `site.ts` → `timeline.handwrittenTitle
 | What | Where |
 |---|---|
 | Email, phone, Instagram, which contacts show | `src/config/site.ts` → `contact` (switch to `info@papafiogos.gr` later = one line) |
+| "Worked with" brand line (above the footer) | `site.ts` → `contact.brands` (order = display order; `[]` hides the line). Label and "and more" in `strings.ts` → `workedWith`, `andMore` |
 | Search/Google description | `site.ts` → `description` |
 | Interface words in both languages (Μίλα μου, Η ΙΣΤΟΡΙΑ, Σήμερα, privacy text…) | `src/i18n/strings.ts` |
 | Privacy page text | `strings.ts` → `privacyBody` (update `privacyUpdated` when you change it) |
 | Logo behaviour (jump distance, springiness, breathing, ripple, nudge…) | `site.ts` → `logo` |
 | Contact animation | `site.ts` → `talk` |
 | Analytics (later) | `site.ts` → `analyticsToken` |
-| Logo, favicons, social image | `npm run brand` (from `scripts/vendor/`) |
+| Logo, favicons, link-preview image (logo + handwritten slogan) | `npm run brand` (from `scripts/vendor/` and the traced slogan) |
 
 ---
 
