@@ -22,6 +22,7 @@ Everything you need to run, check, change and (later) publish the site, in one p
 6. [The timeline: texts and moments](#6-the-timeline-texts-and-moments)
 7. [Timeline photos: the Polaroid prints](#7-timeline-photos-the-polaroid-prints)
 8. [Your handwriting on the site](#8-your-handwriting-on-the-site)
+   - [Offer template for clients (Word)](#8b-offer-template-for-clients-word)
 9. [Other texts and settings](#9-other-texts-and-settings)
 10. [Check before you save](#10-check-before-you-save)
 11. [Save your work (git) and what's in the repo](#11-save-your-work-git-and-whats-in-the-repo)
@@ -126,6 +127,7 @@ a short video, a YouTube link. Never used for the real site.
 | `npm run polaroids` | Rebuild the timeline Polaroid prints from your originals (section 7) |
 | `npm run handwriting` | Re-trace your handwriting from the photos (section 8) |
 | `npm run brand` | Rebuild logo files, favicons, social preview image |
+| `npm run offer` | Rebuild the Word offer templates in `templates/` (section 8b) |
 
 ---
 
@@ -337,6 +339,26 @@ title simply shows the typed one. Size: `site.ts` → `timeline.handwrittenTitle
 
 ---
 
+## 8b. Offer template for clients (Word)
+
+`templates/offer-el.docx` (Greek) and `templates/offer-en.docx` (English): one A4 page with your
+logo and the handwritten "I shoot. You smile." as a pale watermark behind the text. It has: offer
+number and dates, client, project, a services table with subtotal / VAT / total, delivery, terms,
+and your contact details in the footer. No signature fields.
+
+**Use it:** open the file, **File → Save As** a new name first (e.g. `ΠΡ-2026-001 Γιάννης.docx`),
+then replace everything in **[brackets]**. To delete a row (e.g. VAT if you don't charge it): click in
+it → right-click → Delete → Delete rows. Send it to the client as PDF (**File → Save As → PDF**).
+
+The watermark sits in the page header, so it can't be moved by accident while you type. To see or
+change it: double-click the top of the page.
+
+**Change the standard texts for good** (terms, rows, footer): edit `TEXT` / `CONTACT` at the top of
+`scripts/build-offer.mjs` and run `npm run offer`, or simply edit the .docx in Word and save it as
+your new template. When the email changes to info@papafiogos.gr, update `CONTACT` too.
+
+---
+
 ## 9. Other texts and settings
 
 | What | Where |
@@ -525,9 +547,11 @@ papafiogos-site/
 │   ├── build-polaroids.mjs      originals → B&W Polaroid prints   (npm run polaroids)
 │   ├── build-slogan.mjs         handwriting photos → vector lines (npm run handwriting)
 │   ├── build-brand.mjs          logo, favicons, social image      (npm run brand)
+│   ├── build-offer.mjs          Word offer templates → templates/ (npm run offer)
 │   ├── build-font.py            the single font file
 │   └── vendor/                  source files: logo originals, handwriting photos, font
 ├── photos-originals/            your full-size photos (NOT in git, back up yourself)
+├── templates/                   offer-el.docx / offer-en.docx (client offers)
 ├── tests/                       automatic tests (npm test)
 ├── integrations/prune-media.mjs leaves unused media out of the build
 ├── Caddyfile                    Railway web server: real 404s, caching, security headers

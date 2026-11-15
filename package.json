@@ -17,7 +17,8 @@
     "brand": "node scripts/build-brand.mjs",
     "polaroids": "node scripts/build-polaroids.mjs",
     "handwriting": "node scripts/build-slogan.mjs",
-    "zip": "node scripts/make-zip.mjs"
+    "zip": "node scripts/make-zip.mjs",
+    "offer": "node scripts/build-offer.mjs"
   },
   "engines": {
     "node": ">=22"
