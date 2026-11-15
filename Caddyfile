@@ -60,6 +60,15 @@
 
 	# Unknown paths: our own 404 page (it switches to English for /en/... URLs), status 404.
 	handle_errors {
+		# handle_errors is a separate route, so the security headers need repeating here
+		header {
+			Strict-Transport-Security "max-age=31536000"
+			X-Content-Type-Options "nosniff"
+			Referrer-Policy "strict-origin-when-cross-origin"
+			Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+			X-Frame-Options "DENY"
+			-Server
+		}
 		rewrite * /404.html
 		file_server {
 			status {err.status_code}
