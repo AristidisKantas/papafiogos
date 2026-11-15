@@ -27,7 +27,7 @@ const FONT = 'Arial'; // on every Windows/Mac Word, has Greek
 const INK = '1A1A1A';
 const MUTED = '7A7A7A';
 const RULE = 'D0D0D0';
-const WATERMARK = '#ECECEC'; // light enough to read and print over, dark enough to see
+const WATERMARK = '#F5F5F5'; // very pale: the text on top must stay fully readable (owner: #ECECEC hid the letters)
 
 // A4 in twips (1 cm = 567)
 const PAGE_W = 11906;
