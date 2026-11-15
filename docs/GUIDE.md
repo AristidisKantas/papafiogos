@@ -344,7 +344,9 @@ title simply shows the typed one. Size: `site.ts` → `timeline.handwrittenTitle
 `templates/offer-el.docx` (Greek) and `templates/offer-en.docx` (English): one A4 page with your
 logo and the handwritten "I shoot. You smile." as a pale watermark behind the text. It has: offer
 number and dates, client, project, a services table with subtotal / VAT / total, delivery, terms,
-and your contact details in the footer. No signature fields.
+and your contact details in the footer. No signature fields. For now only the date, the services
+and the totals are on (offer number, "valid until", client/project, delivery and terms are switched
+off: set them to `true` in `SHOW` at the top of `scripts/build-offer.mjs` and run `npm run offer`).
 
 **Use it:** open the file, **File → Save As** a new name first (e.g. `ΠΡ-2026-001 Γιάννης.docx`),
 then replace everything in **[brackets]**. To delete a row (e.g. VAT if you don't charge it): click in

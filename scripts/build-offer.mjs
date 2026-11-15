@@ -27,7 +27,16 @@ const FONT = 'Arial'; // on every Windows/Mac Word, has Greek
 const INK = '1A1A1A';
 const MUTED = '7A7A7A';
 const RULE = 'D0D0D0';
-const WATERMARK = '#F5F5F5'; // very pale: the text on top must stay fully readable (owner: #ECECEC hid the letters)
+// owner: #ECECEC hid the letters, #F5F5F5 was too faint -> in between
+const WATERMARK = '#F0F0F0';
+
+// Which parts are on the page (owner switched these off for now, 2026-11-15; true brings one back)
+const SHOW = {
+  offerNo: false, // offer number (top right)
+  validUntil: false, // "valid until" date (top right)
+  toAndProject: false, // To / Project blocks
+  deliveryAndTerms: false, // Delivery + Terms at the bottom
+};
 
 // A4 in twips (1 cm = 567)
 const PAGE_W = 11906;
@@ -81,9 +90,9 @@ const TEXT = {
     title: 'ΠΡΟΣΦΟΡΑ',
     tagline: 'Φωτογραφία & βίντεο · Πάτρα',
     meta: [
-      ['Αρ. προσφοράς', '[ΠΡ-2026-001]'],
-      ['Ημερομηνία', '[ηη/μμ/εεεε]'],
-      ['Ισχύει έως', '[ηη/μμ/εεεε]'],
+      ['offerNo', 'Αρ. προσφοράς', '[ΠΡ-2026-001]'],
+      ['date', 'Ημερομηνία', '[ηη/μμ/εεεε]'],
+      ['validUntil', 'Ισχύει έως', '[ηη/μμ/εεεε]'],
     ],
     to: 'ΠΡΟΣ',
     toLines: ['[Ονοματεπώνυμο]', '[Εταιρεία]', '[Email · Τηλέφωνο]'],
@@ -117,9 +126,9 @@ const TEXT = {
     title: 'OFFER',
     tagline: 'Photography & video · Patras, Greece',
     meta: [
-      ['Offer no.', '[OF-2026-001]'],
-      ['Date', '[dd/mm/yyyy]'],
-      ['Valid until', '[dd/mm/yyyy]'],
+      ['offerNo', 'Offer no.', '[OF-2026-001]'],
+      ['date', 'Date', '[dd/mm/yyyy]'],
+      ['validUntil', 'Valid until', '[dd/mm/yyyy]'],
     ],
     to: 'TO',
     toLines: ['[Full name]', '[Company]', '[Email · Phone]'],
@@ -206,11 +215,13 @@ function documentXml(t) {
   // Title block: "OFFER" + tagline (left), offer number / dates (right)
   const metaRows = table(
     [1700, 1900],
-    t.meta.map(
-      ([k, v]) =>
-        cell(1700, para(run(k, { color: MUTED, size: 17 }), { after: 40 })) +
-        cell(1900, para(run(v, { size: 17 }), { after: 40, align: 'right' })),
-    ),
+    t.meta
+      .filter(([id]) => SHOW[id] !== false)
+      .map(
+        ([, k, v]) =>
+          cell(1700, para(run(k, { color: MUTED, size: 17 }), { after: 40 })) +
+          cell(1900, para(run(v, { size: 17 }), { after: 40, align: 'right' })),
+      ),
     { align: 'right' },
   );
   body.push(
@@ -228,18 +239,20 @@ function documentXml(t) {
   body.push(para('', { rule: true, after: 360 }));
 
   // To / Project
-  const block = (head, lines) =>
-    label(head) +
-    lines
-      .map((l, i) => para(run(l, { size: 19 }), { after: i === lines.length - 1 ? 0 : 40 }))
-      .join('');
-  body.push(
-    table(
-      [half, half],
-      [cell(half, block(t.to, t.toLines)) + cell(half, block(t.job, t.jobLines))],
-    ),
-  );
-  body.push(para('', { after: 420 }));
+  if (SHOW.toAndProject) {
+    const block = (head, lines) =>
+      label(head) +
+      lines
+        .map((l, i) => para(run(l, { size: 19 }), { after: i === lines.length - 1 ? 0 : 40 }))
+        .join('');
+    body.push(
+      table(
+        [half, half],
+        [cell(half, block(t.to, t.toLines)) + cell(half, block(t.job, t.jobLines))],
+      ),
+    );
+    body.push(para('', { after: 420 }));
+  }
 
   // Services
   const W = [2700, CONTENT_W - 2700 - 1800, 1800];
@@ -299,19 +312,21 @@ function documentXml(t) {
   body.push(para('', { after: 420 }));
 
   // Delivery + terms side by side
-  const DW = [half - 300, 300, half];
-  body.push(
-    table(DW, [
-      cell(DW[0], label(t.delivery) + para(run(t.deliveryText, { size: 18 }), { after: 0 })) +
-        cell(DW[1], para('')) +
-        cell(
-          DW[2],
-          label(t.terms) +
-            t.termsLines.map((l) => para(run(`–  ${l}`, { size: 18 }), { after: 50 })).join(''),
-        ),
-    ]),
-  );
-  body.push(para('', { after: 480 }));
+  if (SHOW.deliveryAndTerms) {
+    const DW = [half - 300, 300, half];
+    body.push(
+      table(DW, [
+        cell(DW[0], label(t.delivery) + para(run(t.deliveryText, { size: 18 }), { after: 0 })) +
+          cell(DW[1], para('')) +
+          cell(
+            DW[2],
+            label(t.terms) +
+              t.termsLines.map((l) => para(run(`–  ${l}`, { size: 18 }), { after: 50 })).join(''),
+          ),
+      ]),
+    );
+    body.push(para('', { after: 480 }));
+  }
   body.push(para(run(t.thanks, { size: 19 }), { after: 0 }));
 
   const sect = `<w:sectPr><w:headerReference w:type="default" r:id="rIdHeader"/><w:footerReference w:type="default" r:id="rIdFooter"/><w:pgSz w:w="${PAGE_W}" w:h="${PAGE_H}"/><w:pgMar w:top="${MARGIN}" w:right="${MARGIN}" w:bottom="${MARGIN}" w:left="${MARGIN}" w:header="567" w:footer="567" w:gutter="0"/></w:sectPr>`;
