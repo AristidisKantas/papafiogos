@@ -128,6 +128,7 @@ a short video, a YouTube link. Never used for the real site.
 | `npm run handwriting` | Re-trace your handwriting from the photos (section 8) |
 | `npm run brand` | Rebuild logo files, favicons, social preview image |
 | `npm run offer` | Rebuild the Word offer templates in `templates/` (section 8b) |
+| `npm run card` | Rebuild the business card PDF + preview in `templates/business-card/` (section 8b) |
 
 ---
 
@@ -359,6 +360,17 @@ change it: double-click the top of the page.
 `scripts/build-offer.mjs` and run `npm run offer`, or simply edit the .docx in Word and save it as
 your new template. When the email changes to info@papafiogos.gr, update `CONTACT` too.
 
+### Business card
+
+`templates/business-card/papafiogos-card-print.pdf` is ready for the printer: 85 x 55 mm, page 1 the
+front (logo on white), page 2 the back (your handwritten slogan, contact details, on black). The PDF
+has **3 mm bleed** on every side (page 91 x 61 mm) and the text is vector, so it stays sharp. Tell the
+printer: "85x55, 2-sided, 3 mm bleed included, no crop marks". A matte, thick paper (350 g+) suits
+it. `papafiogos-card-preview.png` is just for looking.
+
+To change the texts (e.g. the email once info@papafiogos.gr exists): edit `LINE` / `CONTACT` at the
+top of `scripts/build-card.mjs` and run `npm run card`.
+
 ---
 
 ## 9. Other texts and settings
@@ -550,10 +562,11 @@ papafiogos-site/
 │   ├── build-slogan.mjs         handwriting photos → vector lines (npm run handwriting)
 │   ├── build-brand.mjs          logo, favicons, social image      (npm run brand)
 │   ├── build-offer.mjs          Word offer templates → templates/ (npm run offer)
+│   ├── build-card.mjs           business card PDF + preview       (npm run card)
 │   ├── build-font.py            the single font file
 │   └── vendor/                  source files: logo originals, handwriting photos, font
 ├── photos-originals/            your full-size photos (NOT in git, back up yourself)
-├── templates/                   offer-el.docx / offer-en.docx (client offers)
+├── templates/                   offer-el.docx / offer-en.docx (client offers), business-card/
 ├── tests/                       automatic tests (npm test)
 ├── integrations/prune-media.mjs leaves unused media out of the build
 ├── Caddyfile                    Railway web server: real 404s, caching, security headers
