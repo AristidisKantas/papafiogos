@@ -5,7 +5,7 @@
 //   src/assets/brand/logo.svg          black, grouped, polished
 //   src/assets/brand/logo-white.svg    white variant
 //   src/assets/brand/logo.png          transparent PNG fallback
-//   public/favicon.svg, favicon.ico, apple-touch-icon.png, og-image.jpg
+//   public/favicon.svg, favicon.ico, favicon-192.png, apple-touch-icon.png, og-image.jpg
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -133,19 +133,36 @@ fs.writeFileSync(path.join(pub, 'favicon.svg'), faviconSvg);
 const markOnly = Buffer.from(svg('#000', ['face', 'bowtie'], markBox));
 const full = Buffer.from(black);
 
+// The mark trimmed to its real edges (markBox has spare room at the bottom), fitted into size x size,
+// so the icons below are optically centred.
+const markTile = async (size) =>
+  sharp(await sharp(markOnly, { density: 300 }).trim().png().toBuffer())
+    .resize(size, size, { fit: 'contain', background: '#fff0' })
+    .png()
+    .toBuffer();
+
 // apple-touch-icon 180x180, black mark on white
 await sharp({ create: { width: 180, height: 180, channels: 3, background: '#fff' } })
   .composite([
     {
-      input: await sharp(markOnly, { density: 300 })
-        .resize(150, 150, { fit: 'contain', background: '#fff0' })
-        .png()
-        .toBuffer(),
+      input: await markTile(150),
       gravity: 'centre',
     },
   ])
   .png()
   .toFile(path.join(pub, 'apple-touch-icon.png'));
+
+// favicon-192.png: the icon Google shows next to the site in search results (wants a multiple of
+// 48 px; the .ico is only 32). Black mark on white, a little padding like the apple icon.
+await sharp({ create: { width: 192, height: 192, channels: 3, background: '#fff' } })
+  .composite([
+    {
+      input: await markTile(144), // room for the circle Google crops it to
+      gravity: 'centre',
+    },
+  ])
+  .png()
+  .toFile(path.join(pub, 'favicon-192.png'));
 
 // og-image 1200x630 (link previews): the mark with the owner's handwritten slogan under it.
 // Everything stays inside the centre square, because some apps crop previews to a square.
